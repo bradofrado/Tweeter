@@ -1,8 +1,15 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import java.util.List;
+import android.widget.Toast;
 
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowingPresenter {
@@ -12,12 +19,15 @@ public class FollowingPresenter {
         void displayMessage(String message);
 
         void addMoreItems(List<User> followees);
+
+        void selectUser(User user);
     }
 
     private static final int PAGE_SIZE = 10;
 
     private View view;
     private FollowService followService;
+    private UserService userService;
 
     private User lastFollowee;
 
@@ -39,6 +49,7 @@ public class FollowingPresenter {
     public FollowingPresenter(View view) {
         this.view = view;
         followService = new FollowService();
+        userService = new UserService();
     }
 
     public void loadMoreItems(User user) {
@@ -47,6 +58,11 @@ public class FollowingPresenter {
             view.setLoadingFooter(true);
             followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, new FollowingObserver());
         }
+    }
+    
+    public void getUser(String userName) {
+        userService.getUser(userName, new UserObserver());
+        view.displayMessage("Getting user's profile...");
     }
 
     public class FollowingObserver implements FollowService.Observer {
@@ -79,6 +95,24 @@ public class FollowingPresenter {
             lastFollowee = (followees.size() > 0) ? followees.get(followees.size() - 1) : null;
             setHasMorePages(hasMorePages);
             view.addMoreItems(followees);
+        }
+    }
+
+    public class UserObserver implements UserService.Observer {
+
+        @Override
+        public void displayError(String message) {
+            view.displayMessage("Failed to get user's profile: " + message);
+        }
+
+        @Override
+        public void displayException(Exception ex) {
+            view.displayMessage("Failed to get user's profile because of exception: " + ex.getMessage());
+        }
+
+        @Override
+        public void receivedUser(User user) {
+            view.selectUser(user);
         }
     }
 }
