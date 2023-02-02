@@ -81,6 +81,11 @@ public class FeedPresenter {
         public void loggedIn(User loggedInUser) {
 
         }
+
+        @Override
+        public void registered(User registeredUser) {
+
+        }
     }
 
     public class FeedObserver implements StatusService.Observer {

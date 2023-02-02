@@ -87,6 +87,11 @@ public class StoryPresenter {
         public void loggedIn(User loggedInUser) {
 
         }
+
+        @Override
+        public void registered(User registeredUser) {
+
+        }
     }
 
     public class StoryObserver implements StatusService.Observer {

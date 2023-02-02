@@ -116,5 +116,10 @@ public class GetFollowingPresenter {
         public void loggedIn(User loggedInUser) {
 
         }
+
+        @Override
+        public void registered(User registeredUser) {
+
+        }
     }
 }

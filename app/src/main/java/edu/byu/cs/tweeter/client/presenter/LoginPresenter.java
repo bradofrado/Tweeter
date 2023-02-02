@@ -72,5 +72,10 @@ public class LoginPresenter {
 
             view.setUser(loggedInUser);
         }
+
+        @Override
+        public void registered(User registeredUser) {
+
+        }
     }
 }

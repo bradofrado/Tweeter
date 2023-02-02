@@ -115,5 +115,10 @@ public class GetFollowersPresenter {
         public void loggedIn(User loggedInUser) {
 
         }
+
+        @Override
+        public void registered(User registeredUser) {
+
+        }
     }
 }
