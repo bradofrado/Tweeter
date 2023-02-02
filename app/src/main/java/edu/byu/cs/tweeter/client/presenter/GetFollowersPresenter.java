@@ -107,6 +107,7 @@ public class GetFollowersPresenter {
 
         @Override
         public void receivedUser(User user) {
+            GetFollowersPresenter.this.user = user;
             view.selectUser(user);
         }
     }
