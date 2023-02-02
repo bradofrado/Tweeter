@@ -78,9 +78,14 @@ public class StoryPresenter {
         }
 
         @Override
-        public void receivedUser(User _user) {
+        public void setUser(User _user) {
             user = _user;
             view.sendUser(user);
+        }
+
+        @Override
+        public void loggedIn(User loggedInUser) {
+
         }
     }
 

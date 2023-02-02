@@ -107,9 +107,14 @@ public class GetFollowingPresenter {
         }
 
         @Override
-        public void receivedUser(User user) {
+        public void setUser(User user) {
             GetFollowingPresenter.this.user = user;
             view.selectUser(user);
+        }
+
+        @Override
+        public void loggedIn(User loggedInUser) {
+
         }
     }
 }

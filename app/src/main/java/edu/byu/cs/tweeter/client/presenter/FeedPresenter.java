@@ -72,9 +72,14 @@ public class FeedPresenter {
         }
 
         @Override
-        public void receivedUser(User _user) {
+        public void setUser(User _user) {
             user = _user;
             view.selectUser(user);
+        }
+
+        @Override
+        public void loggedIn(User loggedInUser) {
+
         }
     }
 
