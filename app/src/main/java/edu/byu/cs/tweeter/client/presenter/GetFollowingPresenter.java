@@ -1,18 +1,12 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import android.widget.Toast;
-
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowingPresenter {
+public class GetFollowingPresenter {
     public interface View {
         void setLoadingFooter(boolean value);
 
@@ -26,6 +20,7 @@ public class FollowingPresenter {
     private static final int PAGE_SIZE = 10;
 
     private View view;
+    private User user;
     private FollowService followService;
     private UserService userService;
 
@@ -46,17 +41,18 @@ public class FollowingPresenter {
         return isLoading;
     }
 
-    public FollowingPresenter(View view) {
+    public GetFollowingPresenter(View view, User user) {
         this.view = view;
+        this.user = user;
         followService = new FollowService();
         userService = new UserService();
     }
 
-    public void loadMoreItems(User user) {
+    public void loadMoreItems() {
         if (!isLoading) {   // This guard is important for avoiding a race condition in the scrolling code.
             isLoading = true;
             view.setLoadingFooter(true);
-            followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, new FollowingObserver());
+            followService.getMoreFollowing(user, PAGE_SIZE, lastFollowee, new FollowingObserver());
         }
     }
     
@@ -89,7 +85,7 @@ public class FollowingPresenter {
         }
 
         @Override
-        public void addFollowees(List<User> followees, boolean hasMorePages) {
+        public void addFollowUsers(List<User> followees, boolean hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(false);
             lastFollowee = (followees.size() > 0) ? followees.get(followees.size() - 1) : null;
