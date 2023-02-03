@@ -47,7 +47,7 @@ public class LoginPresenter {
         }
     }
 
-    public class LoginObserver implements UserService.Observer {
+    public class LoginObserver implements UserService.LoginObserver {
 
         @Override
         public void displayError(String message) {
@@ -60,11 +60,6 @@ public class LoginPresenter {
         }
 
         @Override
-        public void setUser(User user) {
-
-        }
-
-        @Override
         public void loggedIn(User loggedInUser) {
             view.cancelLoginToast();
 
@@ -74,7 +69,7 @@ public class LoginPresenter {
         }
 
         @Override
-        public void registered(User registeredUser) {
+        public void loggedOut() {
 
         }
     }

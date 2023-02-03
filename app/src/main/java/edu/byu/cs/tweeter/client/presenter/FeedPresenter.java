@@ -59,7 +59,7 @@ public class FeedPresenter {
         }
     }
 
-    public class UserObserver implements UserService.Observer {
+    public class UserObserver implements UserService.UserObserver {
 
         @Override
         public void displayError(String message) {
@@ -75,16 +75,6 @@ public class FeedPresenter {
         public void setUser(User _user) {
             user = _user;
             view.selectUser(user);
-        }
-
-        @Override
-        public void loggedIn(User loggedInUser) {
-
-        }
-
-        @Override
-        public void registered(User registeredUser) {
-
         }
     }
 

@@ -65,7 +65,7 @@ public class StoryPresenter {
         }
     }
 
-    public class UserObserver implements UserService.Observer {
+    public class UserObserver implements UserService.UserObserver {
 
         @Override
         public void displayError(String message) {
@@ -81,16 +81,6 @@ public class StoryPresenter {
         public void setUser(User _user) {
             user = _user;
             view.sendUser(user);
-        }
-
-        @Override
-        public void loggedIn(User loggedInUser) {
-
-        }
-
-        @Override
-        public void registered(User registeredUser) {
-
         }
     }
 

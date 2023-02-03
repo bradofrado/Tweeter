@@ -11,9 +11,12 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
+import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowService {
@@ -21,22 +24,35 @@ public class FollowService {
         void displayMessage(String message);
         void displayError(String message);
         void displayException(Exception ex);
+    }
 
+    public interface FollowUsersObserver extends Observer {
         void addFollowUsers(List<User> followees, boolean hasMorePages);
     }
 
-    public void getMoreFollowing(User user, int pageSize, User lastFollowee, Observer observer) {
+    public interface IsFollowObserver extends Observer {
+        void setIsFollow(Boolean isFollow);
+    }
+
+    public void getMoreFollowing(User user, int pageSize, User lastFollowee, FollowUsersObserver observer) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowingHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFollowingTask);
     }
 
-    public void getMoreFollowers(User user, int pageSize, User lastFollower, Observer observer) {
+    public void getMoreFollowers(User user, int pageSize, User lastFollower, FollowUsersObserver observer) {
         GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollower, new GetFollowersHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFollowersTask);
+    }
+
+    public void isFollower(User selectedUser, IsFollowObserver observer) {
+        IsFollowerTask isFollowerTask = new IsFollowerTask(Cache.getInstance().getCurrUserAuthToken(),
+                Cache.getInstance().getCurrUser(), selectedUser, new IsFollowerHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(isFollowerTask);
     }
 
     /**
@@ -44,8 +60,8 @@ public class FollowService {
      */
     private class GetFollowingHandler extends Handler {
 
-        private Observer observer;
-        public GetFollowingHandler(Observer observer) {
+        private FollowUsersObserver observer;
+        public GetFollowingHandler(FollowUsersObserver observer) {
             super(Looper.getMainLooper());
             this.observer = observer;
         }
@@ -73,8 +89,8 @@ public class FollowService {
      */
     private class GetFollowersHandler extends Handler {
 
-        private Observer observer;
-        public GetFollowersHandler(Observer observer) {
+        private FollowUsersObserver observer;
+        public GetFollowersHandler(FollowUsersObserver observer) {
             super(Looper.getMainLooper());
 
             this.observer = observer;
@@ -96,4 +112,32 @@ public class FollowService {
             }
         }
     }
+
+    // IsFollowerHandler
+
+    private class IsFollowerHandler extends Handler {
+
+        private IsFollowObserver observer;
+        public IsFollowerHandler(IsFollowObserver observer) {
+            super(Looper.getMainLooper());
+            this.observer = observer;
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            boolean success = msg.getData().getBoolean(IsFollowerTask.SUCCESS_KEY);
+            if (success) {
+                boolean isFollower = msg.getData().getBoolean(IsFollowerTask.IS_FOLLOWER_KEY);
+
+                observer.setIsFollow(isFollower);
+            } else if (msg.getData().containsKey(IsFollowerTask.MESSAGE_KEY)) {
+                String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
+                observer.displayError(message);
+            } else if (msg.getData().containsKey(IsFollowerTask.EXCEPTION_KEY)) {
+                Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
+                observer.displayException(ex);
+            }
+        }
+    }
+
 }

@@ -60,7 +60,7 @@ public class GetFollowersPresenter {
         }
     }
 
-    public class FollowerObserver implements FollowService.Observer {
+    public class FollowerObserver implements FollowService.FollowUsersObserver {
 
         @Override
         public void displayMessage(String message) {
@@ -93,7 +93,7 @@ public class GetFollowersPresenter {
         }
     }
 
-    public class UserObserver implements UserService.Observer {
+    public class UserObserver implements UserService.UserObserver {
 
         @Override
         public void displayError(String message) {
@@ -109,16 +109,6 @@ public class GetFollowersPresenter {
         public void setUser(User user) {
             GetFollowersPresenter.this.user = user;
             view.selectUser(user);
-        }
-
-        @Override
-        public void loggedIn(User loggedInUser) {
-
-        }
-
-        @Override
-        public void registered(User registeredUser) {
-
         }
     }
 }
