@@ -78,7 +78,7 @@ public class FeedPresenter {
         }
     }
 
-    public class FeedObserver implements StatusService.Observer {
+    public class FeedObserver implements StatusService.SetStatusObserver {
 
         public void setStatuses(boolean _hasMorePages, List<Status> statuses) {
             isLoading = false;

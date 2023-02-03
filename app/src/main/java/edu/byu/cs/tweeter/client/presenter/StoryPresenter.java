@@ -84,7 +84,7 @@ public class StoryPresenter {
         }
     }
 
-    public class StoryObserver implements StatusService.Observer {
+    public class StoryObserver implements StatusService.SetStatusObserver {
 
         @Override
         public void setStatuses(boolean _hasMorePages, List<Status> statuses) {
