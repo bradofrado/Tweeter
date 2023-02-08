@@ -102,7 +102,7 @@ public class StatusService {
         public void handleMessage(@NonNull Message msg) {
             boolean success = msg.getData().getBoolean(GetStoryTask.SUCCESS_KEY);
             if (success) {
-                List<Status> statuses = (List<Status>) msg.getData().getSerializable(GetStoryTask.STATUSES_KEY);
+                List<Status> statuses = (List<Status>) msg.getData().getSerializable(PagedTask.ITEMS_KEY);
                 boolean hasMorePages = msg.getData().getBoolean(GetStoryTask.MORE_PAGES_KEY);
 
                 observer.setStatuses(hasMorePages, statuses);
