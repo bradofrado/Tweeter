@@ -106,7 +106,7 @@ public class MainPresenter {
         }
     }
 
-    private class IsFollowObserver implements FollowService.IsFollowObserver {
+    private class IsFollowObserver implements edu.byu.cs.tweeter.client.model.service.observer.IsFollowObserver {
 
 //        @Override
 //        public void displayMessage(String message) {
@@ -124,7 +124,7 @@ public class MainPresenter {
         }
 
         @Override
-        public void setIsFollow(Boolean isFollower) {
+        public void handleSuccess(Boolean isFollower) {
             view.setIsFollower(isFollower);
         }
     }

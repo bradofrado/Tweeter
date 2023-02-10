@@ -1,25 +1,20 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 
-import androidx.annotation.NonNull;
-
-import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
+import edu.byu.cs.tweeter.client.model.service.observer.IsFollowObserver;
 
-public class IsFollowerHandler extends BackgroundTaskHandler<FollowService.IsFollowObserver> {
+public class IsFollowerHandler extends BackgroundTaskHandler<IsFollowObserver> {
 
-    public IsFollowerHandler(FollowService.IsFollowObserver observer) {
+    public IsFollowerHandler(IsFollowObserver observer) {
         super(observer);
     }
 
     @Override
-    protected void handleSuccess(Bundle data, FollowService.IsFollowObserver observer) {
+    protected void handleSuccess(Bundle data, IsFollowObserver observer) {
         boolean isFollower = data.getBoolean(IsFollowerTask.IS_FOLLOWER_KEY);
-        observer.setIsFollow(isFollower);
+        observer.handleSuccess(isFollower);
     }
 
 }
