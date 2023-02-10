@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.observer.UserTaskObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.PagedTaskObserver;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -95,7 +96,7 @@ public class GetFollowingPresenter {
         }
     }
 
-    public class UserObserver implements UserService.UserObserver {
+    public class UserObserver implements UserTaskObserver {
 
         @Override
         public void handleError(String message) {
@@ -108,7 +109,7 @@ public class GetFollowingPresenter {
         }
 
         @Override
-        public void setUser(User user) {
+        public void handleSuccess(User user) {
             GetFollowingPresenter.this.user = user;
             view.selectUser(user);
         }

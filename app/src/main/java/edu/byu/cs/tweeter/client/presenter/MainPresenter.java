@@ -87,7 +87,7 @@ public class MainPresenter {
         }
     }
 
-    private class LogoutObserver implements UserService.LoginObserver {
+    private class LogoutObserver implements SimpleNotificationObserver {
         @Override
         public void handleError(String message) {
             view.displayMessage("Failed to logout: " + message);
@@ -96,11 +96,6 @@ public class MainPresenter {
         @Override
         public void handleException(Exception ex) {
             view.displayMessage("Failed to logout because of exception: " + ex.getMessage());
-        }
-
-        @Override
-        public void loggedIn(User loggedInUser) {
-
         }
 
         @Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.observer.UserTaskObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.PagedTaskObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -60,7 +61,7 @@ public class FeedPresenter {
         }
     }
 
-    public class UserObserver implements UserService.UserObserver {
+    public class UserObserver implements UserTaskObserver {
 
         @Override
         public void handleError(String message) {
@@ -73,7 +74,7 @@ public class FeedPresenter {
         }
 
         @Override
-        public void setUser(User _user) {
+        public void handleSuccess(User _user) {
             user = _user;
             view.selectUser(user);
         }

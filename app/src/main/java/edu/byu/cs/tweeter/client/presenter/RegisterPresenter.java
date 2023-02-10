@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Base64;
 
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.observer.UserTaskObserver;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class RegisterPresenter {
@@ -81,7 +82,7 @@ public class RegisterPresenter {
         }
     }
 
-    public class RegisterUserObserver implements UserService.RegisterObserver {
+    public class RegisterUserObserver implements UserTaskObserver {
         @Override
         public void handleError(String message) {
             view.displayMessage("Failed to register: " + message);
@@ -93,7 +94,7 @@ public class RegisterPresenter {
         }
 
         @Override
-        public void registered(User registeredUser) {
+        public void handleSuccess(User registeredUser) {
             view.cancelRegisterToast();
 
             view.displayMessage("Hello " + registeredUser.getName());

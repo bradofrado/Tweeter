@@ -25,7 +25,7 @@ public class FollowService {
     public interface IsFollowObserver extends ServiceObserver {
         void setIsFollow(Boolean isFollow);
     }
-    
+
     public void getMoreFollowing(User user, int pageSize, User lastFollowee, PagedTaskObserver<User> observer) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new PagedTaskHandler<>(observer));
