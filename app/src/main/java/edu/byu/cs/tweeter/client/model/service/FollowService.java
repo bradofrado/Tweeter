@@ -11,11 +11,11 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingCountT
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFollowersCountHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFollowingCountHandler;
+import edu.byu.cs.tweeter.client.model.service.handler.CountTaskHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.IsFollowerHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.PagedTaskHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.SimpleNotificationHandler;
+import edu.byu.cs.tweeter.client.model.service.observer.CountTaskObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.PagedTaskObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.SimpleNotificationObserver;
@@ -26,16 +26,6 @@ public class FollowService {
         void setIsFollow(Boolean isFollow);
     }
     
-    public interface FollowerCountObserver extends ServiceObserver {
-
-        void setFollowerCount(int count);
-    }
-
-    public interface FollowingCountObserver extends ServiceObserver {
-
-        void setFollowingCount(int count);
-    }
-
     public void getMoreFollowing(User user, int pageSize, User lastFollowee, PagedTaskObserver<User> observer) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new PagedTaskHandler<>(observer));
@@ -57,17 +47,17 @@ public class FollowService {
         executor.execute(isFollowerTask);
     }
 
-    public void getFollowCounts(User selectedUser, FollowerCountObserver followCountObserver, FollowingCountObserver followingCountObserver) {
+    public void getFollowCounts(User selectedUser, CountTaskObserver followCountObserver, CountTaskObserver followingCountObserver) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // Get count of most recently selected user's followers.
         GetFollowersCountTask followersCountTask = new GetFollowersCountTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new GetFollowersCountHandler(followCountObserver));
+                selectedUser, new CountTaskHandler(followCountObserver));
         executor.execute(followersCountTask);
 
         // Get count of most recently selected user's followees (who they are following)
         GetFollowingCountTask followingCountTask = new GetFollowingCountTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new GetFollowingCountHandler(followingCountObserver));
+                selectedUser, new CountTaskHandler(followingCountObserver));
         executor.execute(followingCountTask);
     }
 
