@@ -13,6 +13,7 @@ import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.observer.SimpleNotificationObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -111,18 +112,18 @@ public class MainPresenter {
 
     private class IsFollowObserver implements FollowService.IsFollowObserver {
 
-        @Override
-        public void displayMessage(String message) {
-            view.displayMessage(message);
-        }
+//        @Override
+//        public void displayMessage(String message) {
+//            view.displayMessage(message);
+//        }
 
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.displayMessage("Failed to determine following relationship: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.displayMessage("Failed to determine following relationship because of exception: " + ex.getMessage());
         }
 
@@ -134,18 +135,18 @@ public class MainPresenter {
 
     private class FollowerCountObserver implements FollowService.FollowerCountObserver {
 
-        @Override
-        public void displayMessage(String message) {
-            view.displayMessage(message);
-        }
+//        @Override
+//        public void displayMessage(String message) {
+//            view.displayMessage(message);
+//        }
 
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.displayMessage("Failed to get followers count: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.displayMessage("Failed to get followers count because of exception: " + ex.getMessage());
         }
 
@@ -157,18 +158,18 @@ public class MainPresenter {
 
     private class FollowingCountObserver implements FollowService.FollowingCountObserver {
 
-        @Override
-        public void displayMessage(String message) {
-            view.displayMessage(message);
-        }
+//        @Override
+//        public void displayMessage(String message) {
+//            view.displayMessage(message);
+//        }
 
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.displayMessage("Failed to get following count: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.displayMessage("Failed to get following count because of exception: " + ex.getMessage());
         }
 
@@ -178,54 +179,54 @@ public class MainPresenter {
         }
     }
 
-    private class UnFollowObserver implements FollowService.UnfollowObserver {
+    private class UnFollowObserver implements SimpleNotificationObserver {
+
+//        @Override
+//        public void displayMessage(String message) {
+//            view.displayMessage(message);
+//        }
 
         @Override
-        public void displayMessage(String message) {
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.displayMessage("Failed to unfollow: " + message);
             view.setFollowButtonEnabled(true);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.displayMessage("Failed to unfollow because of exception: " + ex.getMessage());
             view.setFollowButtonEnabled(true);
         }
 
         @Override
-        public void setUnfollow() {
+        public void handleSuccess() {
             getFollowCounts();
             view.updateFollowButton(true);
             view.setFollowButtonEnabled(true);
         }
     }
 
-    private class FollowObserver implements FollowService.FollowObserver {
+    private class FollowObserver implements SimpleNotificationObserver {
+
+//        @Override
+//        public void displayMessage(String message) {
+//            view.displayMessage(message);
+//        }
 
         @Override
-        public void displayMessage(String message) {
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.setFollowButtonEnabled(true);
             view.displayMessage("Failed to follow: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.setFollowButtonEnabled(true);
             view.displayMessage("Failed to follow because of exception: " + ex.getMessage());
         }
 
         @Override
-        public void setFollow() {
+        public void handleSuccess() {
             getFollowCounts();
             view.updateFollowButton(false);
             view.setFollowButtonEnabled(true);

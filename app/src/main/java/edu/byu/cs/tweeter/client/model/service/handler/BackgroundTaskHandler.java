@@ -1,27 +1,20 @@
 package edu.byu.cs.tweeter.client.model.service.handler;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
 import androidx.annotation.NonNull;
 
-import java.util.List;
-
-import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.PagedTask;
-import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
 
-/**
- * Message handler (i.e., observer) for GetFollowingTask.
- */
-public class GetFollowingHandler extends Handler {
+public abstract class BackgroundTaskHandler<T extends ServiceObserver> extends Handler {
 
-    private FollowService.FollowUsersObserver observer;
+    private T observer;
 
-    public GetFollowingHandler(FollowService.FollowUsersObserver observer) {
+    public BackgroundTaskHandler(T observer) {
         super(Looper.getMainLooper());
         this.observer = observer;
     }
@@ -30,10 +23,7 @@ public class GetFollowingHandler extends Handler {
     public void handleMessage(@NonNull Message msg) {
         boolean success = msg.getData().getBoolean(BackgroundTask.SUCCESS_KEY);
         if (success) {
-            List<User> followees = (List<User>) msg.getData().getSerializable(PagedTask.ITEMS_KEY);
-            boolean hasMorePages = msg.getData().getBoolean(PagedTask.MORE_PAGES_KEY);
-
-            observer.addFollowUsers(followees, hasMorePages);
+            handleSuccess(msg.getData(), observer);
         } else if (msg.getData().containsKey(BackgroundTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(BackgroundTask.MESSAGE_KEY);
             observer.handleError(message);
@@ -42,4 +32,6 @@ public class GetFollowingHandler extends Handler {
             observer.handleException(ex);
         }
     }
+
+    protected abstract void handleSuccess(Bundle data, T observer);
 }

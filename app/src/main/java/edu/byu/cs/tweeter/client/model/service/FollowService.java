@@ -12,48 +12,34 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingCountT
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowingTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.UnfollowTask;
-import edu.byu.cs.tweeter.client.model.service.handler.FollowHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.GetFollowersCountHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.GetFollowersHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.GetFollowingCountHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.GetFollowingHandler;
 import edu.byu.cs.tweeter.client.model.service.handler.IsFollowerHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.UnfollowHandler;
+import edu.byu.cs.tweeter.client.model.service.handler.SimpleNotificationHandler;
+import edu.byu.cs.tweeter.client.model.service.observer.ServiceObserver;
+import edu.byu.cs.tweeter.client.model.service.observer.SimpleNotificationObserver;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowService {
-    public interface Observer {
-        void displayMessage(String message);
-        void displayError(String message);
-        void displayException(Exception ex);
-    }
-
-    public interface FollowUsersObserver extends Observer {
+    public interface FollowUsersObserver extends ServiceObserver {
         void addFollowUsers(List<User> followees, boolean hasMorePages);
+        void displayMessage(String message);
     }
 
-    public interface IsFollowObserver extends Observer {
+    public interface IsFollowObserver extends ServiceObserver {
         void setIsFollow(Boolean isFollow);
     }
     
-    public interface FollowerCountObserver extends Observer {
+    public interface FollowerCountObserver extends ServiceObserver {
 
         void setFollowerCount(int count);
     }
 
-    public interface FollowingCountObserver extends Observer {
+    public interface FollowingCountObserver extends ServiceObserver {
 
         void setFollowingCount(int count);
-    }
-
-    public interface UnfollowObserver extends Observer {
-
-        void setUnfollow();
-    }
-
-    public interface FollowObserver extends  Observer {
-
-        void setFollow();
     }
 
     public void getMoreFollowing(User user, int pageSize, User lastFollowee, FollowUsersObserver observer) {
@@ -91,16 +77,16 @@ public class FollowService {
         executor.execute(followingCountTask);
     }
 
-    public void unfollow(User selectedUser, UnfollowObserver unFollowObserver) {
+    public void unfollow(User selectedUser, SimpleNotificationObserver observer) {
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new UnfollowHandler(unFollowObserver));
+                selectedUser, new SimpleNotificationHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(unfollowTask);
     }
 
-    public void follow(User selectedUser, FollowObserver followObserver) {
+    public void follow(User selectedUser, SimpleNotificationObserver observer) {
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
-                selectedUser, new FollowHandler(followObserver));
+                selectedUser, new SimpleNotificationHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(followTask);
     }

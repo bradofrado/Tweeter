@@ -71,14 +71,14 @@ public class GetFollowingPresenter {
         }
 
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             isLoading = false;
             view.setLoadingFooter(false);
             view.displayMessage("Failed to get following: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(false);
             view.displayMessage("Failed to get following because of exception: " + ex.getMessage());

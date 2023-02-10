@@ -26,10 +26,10 @@ public class GetFollowersCountHandler extends Handler {
             observer.setFollowerCount(count);
         } else if (msg.getData().containsKey(GetFollowersCountTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetFollowersCountTask.MESSAGE_KEY);
-            observer.displayError(message);
+            observer.handleError(message);
         } else if (msg.getData().containsKey(GetFollowersCountTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetFollowersCountTask.EXCEPTION_KEY);
-            observer.displayException(ex);
+            observer.handleException(ex);
         }
     }
 }

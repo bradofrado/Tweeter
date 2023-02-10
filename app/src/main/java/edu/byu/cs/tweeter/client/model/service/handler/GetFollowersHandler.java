@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.BackgroundTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PagedTask;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -28,17 +29,17 @@ public class GetFollowersHandler extends Handler {
 
     @Override
     public void handleMessage(@NonNull Message msg) {
-        boolean success = msg.getData().getBoolean(GetFollowersTask.SUCCESS_KEY);
+        boolean success = msg.getData().getBoolean(BackgroundTask.SUCCESS_KEY);
         if (success) {
             List<User> followers = (List<User>) msg.getData().getSerializable(PagedTask.ITEMS_KEY);
-            boolean hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);
+            boolean hasMorePages = msg.getData().getBoolean(PagedTask.MORE_PAGES_KEY);
             observer.addFollowUsers(followers, hasMorePages);
-        } else if (msg.getData().containsKey(GetFollowersTask.MESSAGE_KEY)) {
-            String message = msg.getData().getString(GetFollowersTask.MESSAGE_KEY);
-            observer.displayError(message);
-        } else if (msg.getData().containsKey(GetFollowersTask.EXCEPTION_KEY)) {
-            Exception ex = (Exception) msg.getData().getSerializable(GetFollowersTask.EXCEPTION_KEY);
-            observer.displayException(ex);
+        } else if (msg.getData().containsKey(BackgroundTask.MESSAGE_KEY)) {
+            String message = msg.getData().getString(BackgroundTask.MESSAGE_KEY);
+            observer.handleError(message);
+        } else if (msg.getData().containsKey(BackgroundTask.EXCEPTION_KEY)) {
+            Exception ex = (Exception) msg.getData().getSerializable(BackgroundTask.EXCEPTION_KEY);
+            observer.handleException(ex);
         }
     }
 }

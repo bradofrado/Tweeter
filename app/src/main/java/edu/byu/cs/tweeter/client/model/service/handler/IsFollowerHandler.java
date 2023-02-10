@@ -27,10 +27,10 @@ public class IsFollowerHandler extends Handler {
             observer.setIsFollow(isFollower);
         } else if (msg.getData().containsKey(IsFollowerTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(IsFollowerTask.MESSAGE_KEY);
-            observer.displayError(message);
+            observer.handleError(message);
         } else if (msg.getData().containsKey(IsFollowerTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(IsFollowerTask.EXCEPTION_KEY);
-            observer.displayException(ex);
+            observer.handleException(ex);
         }
     }
 }
