@@ -4,22 +4,17 @@ import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.model.service.observer.UserTaskObserver;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class LoginPresenter {
-    public interface View {
-        void displayError(String message);
-        void displayMessage(String message);
-        void cancelLoginToast();
-        void setUser(User loggedInUser);
-        void displayLoginMessage(String s);
-    }
-
-    private View view;
-
-    private UserService userService;
+public class LoginPresenter extends AuthenticationPresenter {
+   private UserService userService;
 
     public LoginPresenter(View view) {
-        this.view = view;
+        super(view);
         userService = new UserService();
+    }
+
+    @Override
+    protected String getDescription() {
+        return "login";
     }
 
     public void login(String username, String password) {
@@ -27,10 +22,9 @@ public class LoginPresenter {
         try {
             validateLogin(username, password);
             view.displayError(null);
+            view.displayToastMessage("Logging In...");
 
-            view.displayLoginMessage("Logging In...");
-
-            userService.loginUser(username, password, new LoginObserver());
+            userService.loginUser(username, password, new UserObserver());
         } catch (Exception e) {
             view.displayError(e.getMessage());
         }
@@ -45,28 +39,6 @@ public class LoginPresenter {
         }
         if (password.length() == 0) {
             throw new IllegalArgumentException("Password cannot be empty.");
-        }
-    }
-
-    public class LoginObserver implements UserTaskObserver {
-
-        @Override
-        public void handleError(String message) {
-            view.displayMessage("Failed to login: " + message);
-        }
-
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to login because of exception: " + ex.getMessage());
-        }
-
-        @Override
-        public void handleSuccess(User loggedInUser) {
-            view.cancelLoginToast();
-
-            view.displayMessage("Hello " + loggedInUser.getName());
-
-            view.setUser(loggedInUser);
         }
     }
 }

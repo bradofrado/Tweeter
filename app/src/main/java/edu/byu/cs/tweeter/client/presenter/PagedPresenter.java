@@ -8,10 +8,8 @@ import edu.byu.cs.tweeter.client.model.service.observer.PagedTaskObserver;
 import edu.byu.cs.tweeter.client.model.service.observer.UserTaskObserver;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public abstract class PagedPresenter<T> extends Presenter {
-    public interface View<T> {
-
-        void displayMessage(String message);
+public abstract class PagedPresenter<T> extends Presenter<PagedPresenter.View<T>> {
+    public interface View<T> extends Presenter.View {
 
         void selectUser(User user);
 
@@ -22,7 +20,6 @@ public abstract class PagedPresenter<T> extends Presenter {
 
     private static final int PAGE_SIZE = 10;
 
-    private View view;
     private User user;
     private T lastItem;
     private boolean hasMorePages;
@@ -38,7 +35,7 @@ public abstract class PagedPresenter<T> extends Presenter {
     }
 
     public PagedPresenter(View view, User user) {
-        this.view = view;
+        super(view);
         this.user = user;
         userService = new UserService();
     }
@@ -58,9 +55,6 @@ public abstract class PagedPresenter<T> extends Presenter {
     }
 
     protected abstract void getItems(User user, int pageSize, T lastItem);
-
-    protected abstract String getDescription();
-
 
     private class UserObserver implements UserTaskObserver {
 

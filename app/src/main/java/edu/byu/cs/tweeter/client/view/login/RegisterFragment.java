@@ -2,6 +2,7 @@ package edu.byu.cs.tweeter.client.view.login;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +18,11 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Base64;
+
 import edu.byu.cs.tweeter.R;
+import edu.byu.cs.tweeter.client.presenter.AuthenticationPresenter;
 import edu.byu.cs.tweeter.client.presenter.RegisterPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -25,7 +30,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Implements the register screen.
  */
-public class RegisterFragment extends Fragment implements RegisterPresenter.View {
+public class RegisterFragment extends Fragment implements AuthenticationPresenter.View {
     private static final String LOG_TAG = "RegisterFragment";
     private static final int RESULT_IMAGE = 10;
 
@@ -77,8 +82,10 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                String imageBytesBase64 = convertImageToBase64((BitmapDrawable) imageToUpload.getDrawable());
                 presenter.register(firstName.getText().toString(), lastName.getText().toString(),
-                        alias.getText().toString(), password.getText().toString(), (BitmapDrawable) imageToUpload.getDrawable());
+                        alias.getText().toString(), password.getText().toString(), imageBytesBase64);
             }
         });
 
@@ -105,26 +112,43 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
     }
 
     @Override
-    public void displayRegisterToast(String s) {
+    public void displayToastMessage(String s) {
         registeringToast = Toast.makeText(getContext(), "Registering...", Toast.LENGTH_LONG);
         registeringToast.show();
     }
 
     @Override
-    public void setRegisteredUser(User registeredUser) {
+    public void setUser(User registeredUser) {
         Intent intent = new Intent(getContext(), MainActivity.class);
         intent.putExtra(MainActivity.CURRENT_USER_KEY, registeredUser);
         startActivity(intent);
     }
 
     @Override
-    public void cancelRegisterToast() {
+    public void cancelToast() {
         registeringToast.cancel();
     }
 
     @Override
     public void displayMessage(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    private String convertImageToBase64(BitmapDrawable imageDrawable) {
+        if (imageDrawable == null) {
+            return null;
+        }
+
+        // Convert image to byte array.
+        Bitmap image = imageDrawable.getBitmap();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        byte[] imageBytes = bos.toByteArray();
+
+        // Intentionally, Use the java Base64 encoder so it is compatible with M4.
+        String imageBytesBase64 = Base64.getEncoder().encodeToString(imageBytes);
+
+        return imageBytesBase64;
     }
 
 }
