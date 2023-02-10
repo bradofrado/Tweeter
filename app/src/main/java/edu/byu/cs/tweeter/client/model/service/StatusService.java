@@ -8,45 +8,32 @@ import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFeedTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetStoryTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PostStatusTask;
-import edu.byu.cs.tweeter.client.model.service.handler.GetFeedHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.GetStoryHandler;
-import edu.byu.cs.tweeter.client.model.service.handler.PostStatusHandler;
+
+import edu.byu.cs.tweeter.client.model.service.handler.PagedTaskHandler;
+import edu.byu.cs.tweeter.client.model.service.handler.SimpleNotificationHandler;
+import edu.byu.cs.tweeter.client.model.service.observer.PagedTaskObserver;
+import edu.byu.cs.tweeter.client.model.service.observer.SimpleNotificationObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class StatusService {
-    private interface Observer {
-        void displayError(String message);
-
-        void displayException(Exception ex);
-    }
-
-    public interface SetStatusObserver extends Observer {
-        void setStatuses(boolean hasMorePages, List<Status> statuses);
-    }
-
-    public interface PostStatusObserver extends Observer {
-
-        void onSuccess();
-    }
-
-    public void getStatuses(User user, int pageSize, Status lastStatus, SetStatusObserver observer) {
+    public void getStatuses(User user, int pageSize, Status lastStatus, PagedTaskObserver<Status> observer) {
         GetFeedTask getFeedTask = new GetFeedTask(Cache.getInstance().getCurrUserAuthToken(),
-                user, pageSize, lastStatus, new GetFeedHandler(observer));
+                user, pageSize, lastStatus, new PagedTaskHandler<>(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFeedTask);
     }
 
-    public void getStory(User user, int pageSize, Status lastStatus, SetStatusObserver storyObserver) {
+    public void getStory(User user, int pageSize, Status lastStatus, PagedTaskObserver<Status> storyObserver) {
         GetStoryTask getStoryTask = new GetStoryTask(Cache.getInstance().getCurrUserAuthToken(),
-                user, pageSize, lastStatus, new GetStoryHandler(storyObserver));
+                user, pageSize, lastStatus, new PagedTaskHandler<>(storyObserver));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getStoryTask);
     }
 
-    public void postStatus(Status newStatus, PostStatusObserver observer) {
+    public void postStatus(Status newStatus, SimpleNotificationObserver observer) {
         PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),
-                newStatus, new PostStatusHandler(observer));
+                newStatus, new SimpleNotificationHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(statusTask);
     }

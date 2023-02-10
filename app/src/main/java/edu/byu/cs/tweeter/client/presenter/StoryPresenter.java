@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.observer.PagedTaskObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -63,12 +64,12 @@ public class StoryPresenter {
     public class UserObserver implements UserService.UserObserver {
 
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.displayMessage("Failed to get user's profile: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.displayMessage("Failed to get user's profile because of exception: " + ex.getMessage());
         }
 
@@ -79,10 +80,10 @@ public class StoryPresenter {
         }
     }
 
-    public class StoryObserver implements StatusService.SetStatusObserver {
+    public class StoryObserver implements PagedTaskObserver<Status> {
 
         @Override
-        public void setStatuses(boolean _hasMorePages, List<Status> statuses) {
+        public void handleSuccess(List<Status> statuses, boolean _hasMorePages) {
             isLoading = false;
             view.setLoadingFooter(false);
             hasMorePages = _hasMorePages;
@@ -91,14 +92,14 @@ public class StoryPresenter {
         }
 
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             isLoading = false;
             view.setLoadingFooter(false);
             view.displayMessage("Failed to get story: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(false);
             view.displayMessage("Failed to get story because of exception: " + ex.getMessage());

@@ -50,12 +50,12 @@ public class LoginPresenter {
     public class LoginObserver implements UserService.LoginObserver {
 
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.displayMessage("Failed to login: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.displayMessage("Failed to login because of exception: " + ex.getMessage());
         }
 
@@ -69,7 +69,7 @@ public class LoginPresenter {
         }
 
         @Override
-        public void loggedOut() {
+        public void handleSuccess() {
 
         }
     }

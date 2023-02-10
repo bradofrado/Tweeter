@@ -88,12 +88,12 @@ public class MainPresenter {
 
     private class LogoutObserver implements UserService.LoginObserver {
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.displayMessage("Failed to logout: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.displayMessage("Failed to logout because of exception: " + ex.getMessage());
         }
 
@@ -103,7 +103,7 @@ public class MainPresenter {
         }
 
         @Override
-        public void loggedOut() {
+        public void handleSuccess() {
             //Clear user data (cached data).
             Cache.getInstance().clearCache();
             view.logoutUser();
@@ -233,20 +233,20 @@ public class MainPresenter {
         }
     }
 
-    private class PostStatusObserver implements StatusService.PostStatusObserver {
+    private class PostStatusObserver implements SimpleNotificationObserver {
 
         @Override
-        public void displayError(String message) {
+        public void handleError(String message) {
             view.displayMessage("Failed to post status: " + message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void handleException(Exception ex) {
             view.displayMessage("Failed to post status because of exception: " + ex.getMessage());
         }
 
         @Override
-        public void onSuccess() {
+        public void handleSuccess() {
             view.cancelPostingToast();
             view.displayMessage("Successfully Posted!");
         }
