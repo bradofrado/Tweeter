@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.byu.cs.tweeter.R;
+import edu.byu.cs.tweeter.client.presenter.PagedPresenter;
 import edu.byu.cs.tweeter.client.presenter.StoryPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
@@ -39,7 +40,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Implements the "Story" tab.
  */
-public class StoryFragment extends Fragment implements StoryPresenter.View {
+public class StoryFragment extends Fragment implements PagedPresenter.View<Status> {
     private static final String LOG_TAG = "StoryFragment";
     private static final String USER_KEY = "UserKey";
 
@@ -84,20 +85,20 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
 
         storyRecyclerView.addOnScrollListener(new StoryRecyclerViewPaginationScrollListener(layoutManager));
         presenter = new StoryPresenter(this, user);
-        presenter.loadStoryItems();
+        presenter.loadMoreItems();
 
         return view;
     }
 
     @Override
-    public void sendUser(User user) {
+    public void selectUser(User user) {
         Intent intent = new Intent(getContext(), MainActivity.class);
         intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
         startActivity(intent);
     }
 
     @Override
-    public void setStory(List<Status> statuses) {
+    public void addMoreItems(List<Status> statuses) {
         storyRecyclerViewAdapter.addItems(statuses);
     }
 
@@ -308,7 +309,7 @@ public class StoryFragment extends Fragment implements StoryPresenter.View {
          * data.
          */
         void loadMoreItems() {
-            presenter.loadStoryItems();
+            presenter.loadMoreItems();
         }
 
         /**

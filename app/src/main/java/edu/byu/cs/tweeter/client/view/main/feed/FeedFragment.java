@@ -32,6 +32,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.presenter.FeedPresenter;
+import edu.byu.cs.tweeter.client.presenter.PagedPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -39,7 +40,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Implements the "Feed" tab.
  */
-public class FeedFragment extends Fragment implements FeedPresenter.View {
+public class FeedFragment extends Fragment implements PagedPresenter.View<Status> {
     private static final String LOG_TAG = "FeedFragment";
     private static final String USER_KEY = "UserKey";
 
@@ -85,7 +86,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
 
         feedRecyclerView.addOnScrollListener(new FeedRecyclerViewPaginationScrollListener(layoutManager));
         presenter = new FeedPresenter(this, user);
-        presenter.loadFeedItems();
+        presenter.loadMoreItems();
 
         return view;
     }
@@ -112,7 +113,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
     }
 
     @Override
-    public void addItems(List<Status> statuses) {
+    public void addMoreItems(List<Status> statuses) {
         feedRecyclerViewAdapter.addItems(statuses);
     }
 
@@ -307,7 +308,7 @@ public class FeedFragment extends Fragment implements FeedPresenter.View {
          * data.
          */
         void loadMoreItems() {
-            presenter.loadFeedItems();
+            presenter.loadMoreItems();
         }
 
         /**
