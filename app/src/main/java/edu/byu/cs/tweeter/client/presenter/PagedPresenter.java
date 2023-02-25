@@ -55,39 +55,39 @@ public abstract class PagedPresenter<T> extends Presenter<PagedPresenter.View<T>
     }
 
     protected abstract void getItems(User user, int pageSize, T lastItem);
+    protected abstract String getDescription();
 
-    private class UserObserver implements UserTaskObserver {
-
-        @Override
-        public void handleError(String message) {
-            view.displayMessage("Failed to get user's profile: " + message);
-        }
-
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to get user's profile because of exception: " + ex.getMessage());
-        }
-
+    private class UserObserver extends ServiceObserver implements UserTaskObserver {
         @Override
         public void handleSuccess(User _user) {
             user = _user;
             view.selectUser(user);
         }
+
+        @Override
+        protected String getDescription() {
+            return "get user's profile";
+        }
     }
 
-    protected class PagedObserver implements PagedTaskObserver<T> {
+    protected class PagedObserver extends ServiceObserver implements PagedTaskObserver<T> {
         @Override
         public void handleError(String message) {
+            super.handleError(message);
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage("Failed to " + getDescription() + ": " + message);
         }
 
         @Override
         public void handleException(Exception ex) {
+            super.handleException(ex);
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage("Failed to " + getDescription() + " because of exception: " + ex.getMessage());
+        }
+
+        @Override
+        protected String getDescription() {
+            return PagedPresenter.this.getDescription();
         }
 
         @Override

@@ -1,14 +1,6 @@
 package edu.byu.cs.tweeter.client.presenter;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-
-import java.io.ByteArrayOutputStream;
-import java.util.Base64;
-
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.observer.UserTaskObserver;
-import edu.byu.cs.tweeter.model.domain.User;
 
 public class RegisterPresenter extends AuthenticationPresenter {
     private UserService userService;

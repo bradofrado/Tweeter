@@ -16,17 +16,9 @@ public abstract class AuthenticationPresenter extends Presenter<AuthenticationPr
         super(view);
     }
 
-    protected class UserObserver implements UserTaskObserver {
-        @Override
-        public void handleError(String message) {
-            view.displayMessage("Failed to " + getDescription() + ": " + message);
-        }
+    protected abstract String getDescription();
 
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to " + getDescription() + " because of exception: " + ex.getMessage());
-        }
-
+    protected class UserObserver extends ServiceObserver implements UserTaskObserver {
         @Override
         public void handleSuccess(User user) {
             view.cancelToast();
@@ -37,6 +29,11 @@ public abstract class AuthenticationPresenter extends Presenter<AuthenticationPr
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+        }
+
+        @Override
+        protected String getDescription() {
+            return AuthenticationPresenter.this.getDescription();
         }
     }
 }

@@ -18,11 +18,10 @@ import edu.byu.cs.tweeter.client.model.service.observer.SimpleNotificationObserv
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class MainPresenter {
+public class MainPresenter extends Presenter<MainPresenter.View> {
     private static final String LOG_TAG = "MainPresenter";
 
-    public interface View {
-        void displayMessage(String message);
+    public interface View extends Presenter.View {
         void setIsFollower(boolean value);
 
         void logoutUser();
@@ -38,7 +37,6 @@ public class MainPresenter {
         void cancelPostingToast();
     }
 
-    private View view;
     private User selectedUser;
 
     private FollowService followService;
@@ -46,7 +44,7 @@ public class MainPresenter {
     private StatusService statusService;
 
     public MainPresenter(View view, User selectedUser) {
-        this.view = view;
+        super(view);
         this.selectedUser = selectedUser;
         followService = new FollowService();
         userService = new UserService();
@@ -87,86 +85,48 @@ public class MainPresenter {
         }
     }
 
-    private class LogoutObserver implements SimpleNotificationObserver {
-        @Override
-        public void handleError(String message) {
-            view.displayMessage("Failed to logout: " + message);
-        }
-
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to logout because of exception: " + ex.getMessage());
-        }
-
+    private class LogoutObserver extends ServiceObserver implements SimpleNotificationObserver {
         @Override
         public void handleSuccess() {
             //Clear user data (cached data).
             Cache.getInstance().clearCache();
             view.logoutUser();
         }
+
+        @Override
+        protected String getDescription() {
+            return "logout";
+        }
     }
 
-    private class IsFollowObserver implements edu.byu.cs.tweeter.client.model.service.observer.IsFollowObserver {
-
-//        @Override
-//        public void displayMessage(String message) {
-//            view.displayMessage(message);
-//        }
-
-        @Override
-        public void handleError(String message) {
-            view.displayMessage("Failed to determine following relationship: " + message);
-        }
-
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to determine following relationship because of exception: " + ex.getMessage());
-        }
-
+    private class IsFollowObserver extends ServiceObserver implements edu.byu.cs.tweeter.client.model.service.observer.IsFollowObserver {
         @Override
         public void handleSuccess(Boolean isFollower) {
             view.setIsFollower(isFollower);
         }
+
+        @Override
+        protected String getDescription() {
+            return "determine following relationship";
+        }
     }
 
-    private class FollowerCountObserver implements CountTaskObserver {
-
-//        @Override
-//        public void displayMessage(String message) {
-//            view.displayMessage(message);
-//        }
-
-        @Override
-        public void handleError(String message) {
-            view.displayMessage("Failed to get followers count: " + message);
-        }
-
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to get followers count because of exception: " + ex.getMessage());
-        }
-
+    private class FollowerCountObserver extends ServiceObserver implements CountTaskObserver {
         @Override
         public void handleSuccess(int count) {
             view.setFollowerCount(count);
         }
+
+        @Override
+        protected String getDescription() {
+            return "get followers count";
+        }
     }
 
-    private class FollowingCountObserver implements CountTaskObserver {
-
-//        @Override
-//        public void displayMessage(String message) {
-//            view.displayMessage(message);
-//        }
-
+    private class FollowingCountObserver extends ServiceObserver implements CountTaskObserver {
         @Override
-        public void handleError(String message) {
-            view.displayMessage("Failed to get following count: " + message);
-        }
-
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to get following count because of exception: " + ex.getMessage());
+        protected String getDescription() {
+            return "get following count";
         }
 
         @Override
@@ -175,23 +135,22 @@ public class MainPresenter {
         }
     }
 
-    private class UnFollowObserver implements SimpleNotificationObserver {
-
-//        @Override
-//        public void displayMessage(String message) {
-//            view.displayMessage(message);
-//        }
-
+    private class UnFollowObserver extends ServiceObserver implements SimpleNotificationObserver {
         @Override
         public void handleError(String message) {
-            view.displayMessage("Failed to unfollow: " + message);
+            super.handleError(message);
             view.setFollowButtonEnabled(true);
         }
 
         @Override
         public void handleException(Exception ex) {
-            view.displayMessage("Failed to unfollow because of exception: " + ex.getMessage());
+            super.handleException(ex);
             view.setFollowButtonEnabled(true);
+        }
+
+        @Override
+        protected String getDescription() {
+            return "unfollow";
         }
 
         @Override
@@ -202,23 +161,22 @@ public class MainPresenter {
         }
     }
 
-    private class FollowObserver implements SimpleNotificationObserver {
-
-//        @Override
-//        public void displayMessage(String message) {
-//            view.displayMessage(message);
-//        }
-
+    private class FollowObserver extends ServiceObserver implements SimpleNotificationObserver {
         @Override
         public void handleError(String message) {
+            super.handleError(message);
             view.setFollowButtonEnabled(true);
-            view.displayMessage("Failed to follow: " + message);
         }
 
         @Override
         public void handleException(Exception ex) {
+            super.handleException(ex);
             view.setFollowButtonEnabled(true);
-            view.displayMessage("Failed to follow because of exception: " + ex.getMessage());
+        }
+
+        @Override
+        protected String getDescription() {
+            return "follow";
         }
 
         @Override
@@ -229,22 +187,17 @@ public class MainPresenter {
         }
     }
 
-    private class PostStatusObserver implements SimpleNotificationObserver {
-
-        @Override
-        public void handleError(String message) {
-            view.displayMessage("Failed to post status: " + message);
-        }
-
-        @Override
-        public void handleException(Exception ex) {
-            view.displayMessage("Failed to post status because of exception: " + ex.getMessage());
-        }
+    private class PostStatusObserver extends ServiceObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleSuccess() {
             view.cancelPostingToast();
             view.displayMessage("Successfully Posted!");
+        }
+
+        @Override
+        protected String getDescription() {
+            return "post status";
         }
     }
 
