@@ -1,0 +1,24 @@
+1. Pick one place where you used the observer pattern. Which class was the subject?
+        I used the observer pattern in the GetFollowersPresenter. It needed to notify the View when there were changes, but it did not have a dependency on the view. But it did depend on a generic "View" observer that the GetFollowersFragment could implement. The subject was GetFollowersFragment.
+   Which class was the observer? Which layer did the subject belong to and which layer did the observer belong to? (Model, View, or Presenter layer)
+        The observer was PagedPresenter.View -> A generic interface observer for PagedViews. The subject belonged to the View layer, the observer belonged to the Presenter layer
+2. Pick one place where you used generics. What class was it in? What classes can the generic type T be?
+        PagedPresenter. The generic type T could be either a Status, or User
+3. Pick one place where you used the template method pattern. Show the template method. What class is it in?
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            boolean success = msg.getData().getBoolean(BackgroundTask.SUCCESS_KEY);
+            if (success) {
+                handleSuccess(msg.getData(), observer);
+            } else if (msg.getData().containsKey(BackgroundTask.MESSAGE_KEY)) {
+                String message = msg.getData().getString(BackgroundTask.MESSAGE_KEY);
+                observer.handleError(message);
+            } else if (msg.getData().containsKey(BackgroundTask.EXCEPTION_KEY)) {
+                Exception ex = (Exception) msg.getData().getSerializable(BackgroundTask.EXCEPTION_KEY);
+                observer.handleException(ex);
+            }
+        }
+
+        BackgroundTaskHandler
+   Show the step of the algorithm that is deferred to the class's subclass. What class is it in?
+        handleSuccess is deferred to the subclass. It is used in all of the handlers, but specifically CountTaskHandler
