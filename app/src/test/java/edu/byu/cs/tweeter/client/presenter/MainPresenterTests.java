@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,12 +38,18 @@ public class MainPresenterTests {
     @Nested
     @DisplayName("Post Status Tests")
     public class PostStatusTests {
+        private final String post = "My post";
+
         @Test
         @DisplayName("Test Successful Post Status")
         public void testSuccessfulPostStatus() {
             Mockito.doAnswer(new Answer<Void>() {
                 @Override
                 public Void answer(InvocationOnMock invocation) throws Throwable {
+                    Status status = invocation.getArgument(0, Status.class);
+                    Assertions.assertNotNull(status);
+                    Assertions.assertEquals(post, status.getPost());
+
                     MainPresenter.PostStatusObserver observer = invocation.getArgument(1, MainPresenter.PostStatusObserver.class);
                     observer.handleSuccess();
                     return null;
@@ -63,13 +70,17 @@ public class MainPresenterTests {
             Mockito.doAnswer(new Answer<Void>() {
                 @Override
                 public Void answer(InvocationOnMock invocation) throws Throwable {
+                    Status status = invocation.getArgument(0, Status.class);
+                    Assertions.assertNotNull(status);
+                    Assertions.assertEquals(post, status.getPost());
+
                     MainPresenter.PostStatusObserver observer = invocation.getArgument(1, MainPresenter.PostStatusObserver.class);
                     observer.handleError("the error message");
                     return null;
                 }
             }).when(mockStatusService).postStatus(Mockito.any(), Mockito.any());
 
-            classUnderTest.postStatus("My post");
+            classUnderTest.postStatus(post);
 
             Mockito.verify(mockStatusService).postStatus(Mockito.any(Status.class), Mockito.any(MainPresenter.PostStatusObserver.class));
             Mockito.verify(mockView).displayInfoMessage("Posting Status...");
@@ -83,6 +94,10 @@ public class MainPresenterTests {
             Mockito.doAnswer(new Answer<Void>() {
                 @Override
                 public Void answer(InvocationOnMock invocation) throws Throwable {
+                    Status status = invocation.getArgument(0, Status.class);
+                    Assertions.assertNotNull(status);
+                    Assertions.assertEquals(post, status.getPost());
+
                     MainPresenter.PostStatusObserver observer = invocation.getArgument(1, MainPresenter.PostStatusObserver.class);
                     observer.handleException(new Exception("the exception"));
                     return null;
