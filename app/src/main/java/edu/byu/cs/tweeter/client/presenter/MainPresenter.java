@@ -34,7 +34,8 @@ public class MainPresenter extends Presenter<MainPresenter.View> {
 
         void setFollowButtonEnabled(boolean b);
 
-        void cancelPostingToast();
+        void cancelInfoMessage();
+        void displayInfoMessage(String message);
     }
 
     private User selectedUser;
@@ -48,7 +49,6 @@ public class MainPresenter extends Presenter<MainPresenter.View> {
         this.selectedUser = selectedUser;
         followService = new FollowService();
         userService = new UserService();
-        statusService = new StatusService();
     }
 
     public void isFollower(User selectedUser) {
@@ -77,12 +77,21 @@ public class MainPresenter extends Presenter<MainPresenter.View> {
 
     public void postStatus(String post) {
         try {
+            view.displayInfoMessage("Posting Status...");
             Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), getFormattedDateTime(), parseURLs(post), parseMentions(post));
-            statusService.postStatus(newStatus, new PostStatusObserver());
+            getStatusService().postStatus(newStatus, new PostStatusObserver());
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage(), ex);
             view.displayMessage("Failed to post the status because of exception: " + ex.getMessage());
         }
+    }
+
+    protected StatusService getStatusService() {
+        if (statusService == null) {
+            statusService = new StatusService();
+        }
+
+        return statusService;
     }
 
     private class LogoutObserver extends ServiceObserver implements SimpleNotificationObserver {
@@ -187,12 +196,24 @@ public class MainPresenter extends Presenter<MainPresenter.View> {
         }
     }
 
-    private class PostStatusObserver extends ServiceObserver implements SimpleNotificationObserver {
+    protected class PostStatusObserver extends ServiceObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleSuccess() {
-            view.cancelPostingToast();
+            view.cancelInfoMessage();
             view.displayMessage("Successfully Posted!");
+        }
+
+        @Override
+        public void handleError(String message) {
+            view.cancelInfoMessage();
+            super.handleError(message);
+        }
+
+        @Override
+        public void handleException(Exception ex) {
+            view.cancelInfoMessage();
+            super.handleException(ex);
         }
 
         @Override
