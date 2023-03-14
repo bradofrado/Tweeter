@@ -18,11 +18,11 @@ public abstract class PagedPresenter<T> extends Presenter<PagedPresenter.View<T>
         void addMoreItems(List<T> followers);
     }
 
-    private static final int PAGE_SIZE = 10;
+    protected static final int PAGE_SIZE = 10;
 
     private User user;
     private T lastItem;
-    private boolean hasMorePages;
+    private boolean hasMorePages = true;
     private boolean isLoading = false;
 
     private UserService userService;
@@ -52,6 +52,10 @@ public abstract class PagedPresenter<T> extends Presenter<PagedPresenter.View<T>
             view.setLoadingFooter(true);
             getItems(user, PAGE_SIZE, lastItem);
         }
+    }
+
+    public T getLastItem() {
+        return lastItem;
     }
 
     protected abstract void getItems(User user, int pageSize, T lastItem);
