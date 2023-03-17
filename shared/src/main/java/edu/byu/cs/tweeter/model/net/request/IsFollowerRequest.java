@@ -13,6 +13,7 @@ public class IsFollowerRequest {
         this.followeeAlias = followeeAlias;
     }
 
+    private IsFollowerRequest() {}
 
     public AuthToken getAuthToken() {
         return authToken;

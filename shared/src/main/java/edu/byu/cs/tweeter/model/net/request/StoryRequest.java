@@ -16,6 +16,7 @@ public class StoryRequest {
         this.lastStatus = lastStatus;
     }
 
+    private StoryRequest() {}
 
     public AuthToken getAuthToken() {
         return authToken;

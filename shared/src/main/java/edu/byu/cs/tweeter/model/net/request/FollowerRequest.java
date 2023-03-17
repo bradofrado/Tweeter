@@ -16,6 +16,8 @@ public class FollowerRequest {
         this.lastFollower = lastFollower;
     }
 
+    private FollowerRequest() {}
+
 
     public AuthToken getAuthToken() {
         return authToken;

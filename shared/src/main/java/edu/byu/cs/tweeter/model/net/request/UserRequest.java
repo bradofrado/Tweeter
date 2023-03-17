@@ -11,6 +11,8 @@ public class UserRequest {
         this.alias = alias;
     }
 
+    private UserRequest() {}
+
 
     public AuthToken getAuthToken() {
         return authToken;

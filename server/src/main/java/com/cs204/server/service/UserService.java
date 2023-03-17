@@ -47,7 +47,7 @@ public class UserService {
     }
 
     public LogoutResponse logout(LogoutRequest request) {
-        if (request.getAuthToken() == null) {
+        if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
 
@@ -55,13 +55,17 @@ public class UserService {
     }
 
     public UserResponse getUser(UserRequest request) {
-        if (request.getAlias() == null) {
+        if (request.getAlias() == null || request.getAlias().length() == 0) {
             throw new RuntimeException("[Bad Request] Missing an alias");
-        } else if (request.getAuthToken() == null) {
+        } else if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
 
         User user = getFakeData().findUserByAlias(request.getAlias());
+
+        if (user == null) {
+            return new UserResponse("Could not find user " + request.getAlias());
+        }
 
         return new UserResponse(user);
     }

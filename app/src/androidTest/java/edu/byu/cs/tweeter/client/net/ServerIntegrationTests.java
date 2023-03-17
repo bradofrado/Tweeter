@@ -135,8 +135,8 @@ public class ServerIntegrationTests {
         }
 
         @Test
-        @DisplayName("Should return _ when get followers")
-        public void should_Return_whenGetFollowers() {
+        @DisplayName("Should return users when get followers")
+        public void should_Return_whenUsersGetFollowers() {
             try {
                 FollowersCountResponse response = serverFacade.getFollowersCount(request);
 

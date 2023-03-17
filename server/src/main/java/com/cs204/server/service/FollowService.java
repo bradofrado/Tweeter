@@ -47,7 +47,7 @@ public class FollowService {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
         } else if(request.getLimit() <= 0) {
             throw new RuntimeException("[Bad Request] Request needs to have a positive limit");
-        } else if (request.getAuthToken() == null) {
+        } else if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
@@ -60,7 +60,7 @@ public class FollowService {
      * @return
      */
     public FollowResponse follow(FollowRequest request) {
-        if (request.getAuthToken() == null) {
+        if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         } else if (request.getFolloweeAlias() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a followee alias");
@@ -70,7 +70,7 @@ public class FollowService {
     }
 
     public UnfollowResponse unfollow(UnfollowRequest request) {
-        if (request.getAuthToken() == null) {
+        if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         } else if (request.getFolloweeAlias() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a followee alias");
@@ -85,7 +85,7 @@ public class FollowService {
      * @return
      */
     public IsFollowerResponse isFollower(IsFollowerRequest request) {
-        if (request.getAuthToken() == null) {
+        if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         } else if (request.getFolloweeAlias() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a followee alias");
@@ -98,7 +98,7 @@ public class FollowService {
     }
 
     public FollowersCountResponse getFollowersCount(FollowersCountRequest request) {
-        if (request.getAuthToken() == null) {
+        if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         } else if (request.getTargetUser() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
@@ -110,7 +110,7 @@ public class FollowService {
     }
 
     public FollowingCountResponse getFollowingCount(FollowingCountRequest request) {
-        if (request.getAuthToken() == null) {
+        if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         } else if (request.getTargetUser() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");

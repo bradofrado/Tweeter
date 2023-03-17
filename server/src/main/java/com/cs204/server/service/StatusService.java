@@ -18,7 +18,7 @@ public class StatusService {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
         } else if(request.getLimit() <= 0) {
             throw new RuntimeException("[Bad Request] Request needs to have a positive limit");
-        } else if (request.getAuthToken() == null) {
+        } else if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
@@ -32,7 +32,7 @@ public class StatusService {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
         } else if(request.getLimit() <= 0) {
             throw new RuntimeException("[Bad Request] Request needs to have a positive limit");
-        } else if (request.getAuthToken() == null) {
+        } else if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
@@ -44,7 +44,7 @@ public class StatusService {
     public PostStatusResponse postStatus(PostStatusRequest request) {
         if(request.getStatus() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a status");
-        } else if (request.getAuthToken() == null) {
+        } else if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 

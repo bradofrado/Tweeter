@@ -22,6 +22,8 @@ public class RegisterRequest {
      */
     private String image;
 
+    private RegisterRequest() {}
+
     public RegisterRequest(String firstName, String lastName, String username, String password,
                            String image) {
         this.firstName = firstName;
@@ -49,5 +51,26 @@ public class RegisterRequest {
 
     public String getImage() {
         return image;
+    }
+
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

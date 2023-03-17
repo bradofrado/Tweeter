@@ -12,6 +12,8 @@ public class FollowersCountRequest {
         this.targetUser = targetUser;
     }
 
+    private FollowersCountRequest() {}
+
 
     public AuthToken getAuthToken() {
         return authToken;

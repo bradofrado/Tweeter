@@ -11,6 +11,8 @@ public class UnfollowRequest {
         this.followeeAlias = followeeAlias;
     }
 
+    private UnfollowRequest() {}
+
 
     public AuthToken getAuthToken() {
         return authToken;

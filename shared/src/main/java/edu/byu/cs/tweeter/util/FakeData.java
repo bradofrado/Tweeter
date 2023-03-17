@@ -51,7 +51,7 @@ public class FakeData {
     /**
      * Generated auth token.
      */
-    private final AuthToken authToken = new AuthToken();
+    private final AuthToken authToken = new AuthToken("test token");
 
     /**
      * List of generated users.

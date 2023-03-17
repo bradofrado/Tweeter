@@ -16,6 +16,8 @@ public class FeedRequest {
         this.lastStatus = lastStatus;
     }
 
+    private FeedRequest() {}
+
 
     public AuthToken getAuthToken() {
         return authToken;

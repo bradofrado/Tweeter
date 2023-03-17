@@ -12,6 +12,8 @@ public class PostStatusRequest {
         this.status = status;
     }
 
+    private PostStatusRequest() {}
+
 
     public AuthToken getAuthToken() {
         return authToken;

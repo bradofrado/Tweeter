@@ -12,6 +12,7 @@ public class FollowingCountRequest {
         this.targetUser = targetUser;
     }
 
+    private FollowingCountRequest() {}
 
     public AuthToken getAuthToken() {
         return authToken;
