@@ -33,7 +33,6 @@ public class ServerIntegrationTests {
     @Nested
     public class RegisterTests {
         private RegisterRequest request;
-        private static final String registerUrl = "";
 
         @BeforeEach
         public void setup() {
@@ -47,7 +46,7 @@ public class ServerIntegrationTests {
 
 
             try {
-                RegisterResponse response = serverFacade.register(request, registerUrl);
+                RegisterResponse response = serverFacade.register(request);
 
                 Assertions.assertTrue(response.isSuccess());
                 Assertions.assertNotNull(response);
@@ -69,7 +68,7 @@ public class ServerIntegrationTests {
         @Test
         @DisplayName("Should fail when ")
         public void should_Fail_when() {
-            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.register(request, registerUrl));
+            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.register(request));
         }
     }
 
@@ -77,7 +76,6 @@ public class ServerIntegrationTests {
     public class GetFollowersTests {
         private FollowerRequest request;
         private AuthToken authToken;
-        private static final String url = "";
 
 
         @BeforeEach
@@ -90,7 +88,7 @@ public class ServerIntegrationTests {
         @DisplayName("Should return _ when get followers")
         public void should_Return_whenGetFollowers() {
             try {
-                FollowerResponse response = serverFacade.getFollowers(request, url);
+                FollowerResponse response = serverFacade.getFollowers(request);
 
                 Assertions.assertTrue(response.isSuccess());
                 Assertions.assertNotNull(response);
@@ -109,7 +107,7 @@ public class ServerIntegrationTests {
         public void should_fail_whenGivenInvalidAuthToken() {
             request.setAuthToken(new AuthToken("badboi"));
 
-            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.getFollowers(request, url));
+            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.getFollowers(request));
         }
 
         @Test
@@ -117,7 +115,7 @@ public class ServerIntegrationTests {
         public void should_fail_whenGivenInvalidLimit() {
             request.setLimit(-1);
 
-            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.getFollowers(request, url));
+            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.getFollowers(request));
         }
     }
 
@@ -140,7 +138,7 @@ public class ServerIntegrationTests {
         @DisplayName("Should return _ when get followers")
         public void should_Return_whenGetFollowers() {
             try {
-                FollowersCountResponse response = serverFacade.getFollowersCount(request, url);
+                FollowersCountResponse response = serverFacade.getFollowersCount(request);
 
                 Assertions.assertNotNull(response);
 
@@ -156,7 +154,7 @@ public class ServerIntegrationTests {
         public void should_fail_whenGivenInvalidAuthToken() {
             request.setAuthToken(new AuthToken("badboi"));
 
-            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.getFollowersCount(request, url));
+            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.getFollowersCount(request));
         }
     }
 
@@ -166,7 +164,7 @@ public class ServerIntegrationTests {
         AuthToken authToken = null;
         try {
             RegisterResponse registerResponse = serverFacade.register(new RegisterRequest(targetUser.getFirstName(), targetUser.getLastName(),
-                    targetUser.getAlias(), "mypassword123", targetUser.getImageUrl()), RegisterTests.registerUrl);
+                    targetUser.getAlias(), "mypassword123", targetUser.getImageUrl()));
             Assertions.assertTrue(registerResponse.isSuccess());
 
             authToken = registerResponse.getAuthToken();

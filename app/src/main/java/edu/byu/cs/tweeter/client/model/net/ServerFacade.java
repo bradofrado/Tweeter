@@ -4,17 +4,36 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.net.request.FeedRequest;
+import edu.byu.cs.tweeter.model.net.request.FollowRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowersCountRequest;
+import edu.byu.cs.tweeter.model.net.request.FollowingCountRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
+import edu.byu.cs.tweeter.model.net.request.IsFollowerRequest;
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
+import edu.byu.cs.tweeter.model.net.request.LogoutRequest;
+import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
+import edu.byu.cs.tweeter.model.net.request.StoryRequest;
+import edu.byu.cs.tweeter.model.net.request.UnfollowRequest;
+import edu.byu.cs.tweeter.model.net.request.UserRequest;
+import edu.byu.cs.tweeter.model.net.response.FeedResponse;
+import edu.byu.cs.tweeter.model.net.response.FollowResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowersCountResponse;
+import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
+import edu.byu.cs.tweeter.model.net.response.IsFollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.LoginResponse;
+import edu.byu.cs.tweeter.model.net.response.LogoutResponse;
+import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
+import edu.byu.cs.tweeter.model.net.response.StoryResponse;
+import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
+import edu.byu.cs.tweeter.model.net.response.UserResponse;
 
 /**
  * Acts as a Facade to the Tweeter server. All network requests to the server should go through
@@ -30,14 +49,42 @@ public class ServerFacade {
 
     private final ClientCommunicator clientCommunicator = new ClientCommunicator(SERVER_URL);
 
+    public final static String LOGIN_URL = "/login";
+    public final static String LOGOUT_URL = "/logout";
+    public final static String REGISTER_URL = "/register";
+    public final static String USER_URL = "/user";
+    public final static String GET_FOLLOWERS_URL = "/followers";
+    public final static String IS_FOLLOWER_URL = "/isfollower";
+    public final static String GET_FOLLOWEES_URL = "/following";
+    public final static String COUNT_URL = "count";
+    public final static String FOLLOW_URL = "/follow";
+    public final static String UNFOLLOW_URL = "/unfollow";
+    public final static String GET_FEED_URL = "/feed";
+    public final static String GET_STORY_URL = "/story";
+    public final static String POST_STATUS_URL = "/poststatus";
+
+
     /**
      * Performs a login and if successful, returns the logged in user and an auth token.
      *
      * @param request contains all information needed to perform a login.
      * @return the login response.
      */
-    public LoginResponse login(LoginRequest request, String urlPath) throws IOException, TweeterRemoteException {
-        return clientCommunicator.doPost(urlPath, request, null, LoginResponse.class);
+    public LoginResponse login(LoginRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(LOGIN_URL, request, null, LoginResponse.class);
+    }
+
+    public LogoutResponse logout(LogoutRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(LOGOUT_URL, request, createAuthTokenHeader(request.getAuthToken()), LogoutResponse.class);
+    }
+
+    public RegisterResponse register(RegisterRequest request)
+            throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(REGISTER_URL, request, null, RegisterResponse.class);
+    }
+
+    public UserResponse getUser(UserRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doGet(USER_URL + "/" + request.getAlias(), createAuthTokenHeader(request.getAuthToken()), UserResponse.class);
     }
 
     /**
@@ -49,24 +96,65 @@ public class ServerFacade {
      *                other information required to satisfy the request.
      * @return the followees.
      */
-    public FollowingResponse getFollowees(FollowingRequest request, String urlPath)
+    public FollowingResponse getFollowees(FollowingRequest request)
             throws IOException, TweeterRemoteException {
-        return clientCommunicator.doPost(urlPath, request, null, FollowingResponse.class);
+        return clientCommunicator.doPost(GET_FOLLOWEES_URL, request, createAuthTokenHeader(request.getAuthToken()), FollowingResponse.class);
     }
 
-    public FollowerResponse getFollowers(FollowerRequest request, String urlPath) throws IOException, TweeterRemoteException {
-        return clientCommunicator.doPost(urlPath, request, null, FollowerResponse.class);
+    public FollowerResponse getFollowers(FollowerRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(GET_FOLLOWERS_URL, request, createAuthTokenHeader(request.getAuthToken()), FollowerResponse.class);
     }
 
-    public RegisterResponse register(RegisterRequest request, String urlPath)
-        throws IOException, TweeterRemoteException {
-        return clientCommunicator.doPost(urlPath, request, null, RegisterResponse.class);
+    public FollowersCountResponse getFollowersCount(FollowersCountRequest request) throws IOException, TweeterRemoteException {
+        String url = concatURL(GET_FOLLOWERS_URL, request.getTargetUser(), COUNT_URL);
+        return clientCommunicator.doGet(url,createAuthTokenHeader(request.getAuthToken()),
+                FollowersCountResponse.class);
     }
 
-    public FollowersCountResponse getFollowersCount(FollowersCountRequest request, String urlPath) throws IOException, TweeterRemoteException {
+    public FollowingCountResponse getFollowingCount(FollowingCountRequest request) throws IOException, TweeterRemoteException {
+        String url = concatURL(GET_FOLLOWEES_URL, request.getTargetUser(), COUNT_URL);
+        return clientCommunicator.doGet(url,createAuthTokenHeader(request.getAuthToken()),
+                FollowingCountResponse.class);
+    }
+
+    public IsFollowerResponse isFollower(IsFollowerRequest request) throws IOException, TweeterRemoteException {
+        String url = concatURL(IS_FOLLOWER_URL, request.getFollowerAlias(), request.getFolloweeAlias());
+        return clientCommunicator.doGet(url, createAuthTokenHeader(request.getAuthToken()), IsFollowerResponse.class);
+    }
+
+    public FollowResponse follow(FollowRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(FOLLOW_URL, request, createAuthTokenHeader(request.getAuthToken()), FollowResponse.class);
+    }
+
+    public UnfollowResponse unfollow(UnfollowRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(UNFOLLOW_URL, request, createAuthTokenHeader(request.getAuthToken()), UnfollowResponse.class);
+    }
+
+    public FeedResponse getFeed(FeedRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(GET_FEED_URL, request, createAuthTokenHeader(request.getAuthToken()), FeedResponse.class);
+    }
+
+    public StoryResponse getStory(StoryRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(GET_STORY_URL, request, createAuthTokenHeader(request.getAuthToken()), StoryResponse.class);
+    }
+
+    public PostStatusResponse postStatus(PostStatusRequest request) throws IOException, TweeterRemoteException {
+        return clientCommunicator.doPost(POST_STATUS_URL, request, createAuthTokenHeader(request.getAuthToken()), PostStatusResponse.class);
+    }
+
+    private Map<String, String> createAuthTokenHeader(AuthToken authToken) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(AUTH_TOKEN_HEADER, request.getAuthToken().getToken());
+        headers.put(AUTH_TOKEN_HEADER, authToken.getToken());
 
-        return clientCommunicator.doGet(urlPath + "/" + request.getTargetUser(),headers, FollowersCountResponse.class);
+        return headers;
+    }
+
+    private String concatURL(String... args) {
+        String full = "";
+        for (String arg: args) {
+            full += "/" + arg;
+        }
+
+        return full;
     }
 }

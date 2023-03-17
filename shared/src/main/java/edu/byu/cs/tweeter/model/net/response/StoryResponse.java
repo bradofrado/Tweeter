@@ -18,7 +18,7 @@ public class StoryResponse extends Response {
     }
 
 
-    public boolean isHasMorePages() {
+    public boolean hasMorePages() {
         return hasMorePages;
     }
 
