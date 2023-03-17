@@ -83,7 +83,7 @@ public class ServerIntegrationTests {
         @BeforeEach
         public void setup() {
             authToken = createAuthToken();
-            request = new FollowerRequest(authToken, targetUser, 10, null);
+            request = new FollowerRequest(authToken, targetUser.getAlias(), 10, null);
         }
 
         @Test
@@ -133,7 +133,7 @@ public class ServerIntegrationTests {
         public void setup() {
             authToken = createAuthToken();
 
-            request = new FollowersCountRequest(authToken, targetUser);
+            request = new FollowersCountRequest(authToken, targetUser.getAlias());
         }
 
         @Test

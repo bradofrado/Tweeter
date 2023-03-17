@@ -33,6 +33,7 @@ public class LoginResponse extends Response {
         this.authToken = authToken;
     }
 
+
     /**
      * Returns the logged in user.
      *

@@ -8,8 +8,25 @@ public class FollowerResponse extends Response {
     private boolean hasMorePages;
     private List<User> users;
 
-    public FollowerResponse(boolean status, String message) {
-        super(status, message);
+    /**
+     * Creates a response indicating that the corresponding request was successful.
+     *
+     * @param hasMorePages Whether or not there are more pages of users
+     * @param users The list of followers
+     */
+    public FollowerResponse(List<User> users, boolean hasMorePages) {
+        super(true);
+        this.hasMorePages = hasMorePages;
+        this.users = users;
+    }
+
+    /**
+     * Creates a response indicating that the corresponding request was unsuccessful.
+     *
+     * @param message a message describing why the request was unsuccessful.
+     */
+    public FollowerResponse(String message) {
+        super(false, message);
     }
 
 

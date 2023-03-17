@@ -7,8 +7,25 @@ public class RegisterResponse extends Response {
     private User registeredUser;
     private AuthToken authToken;
 
-    RegisterResponse(boolean success, String message) {
-        super(success, message);
+    /**
+     * Creates a response indicating that the corresponding request was successful.
+     *
+     * @param registeredUser the now registered user.
+     * @param authToken the auth token representing this user's session with the server.
+     */
+    public RegisterResponse(User registeredUser, AuthToken authToken) {
+        super(true);
+        this.registeredUser = registeredUser;
+        this.authToken = authToken;
+    }
+
+    /**
+     * Creates a response indicating that the corresponding request was unsuccessful.
+     *
+     * @param message a message describing why the request was unsuccessful.
+     */
+    public RegisterResponse(String message) {
+        super(false, message);
     }
 
     public User getRegisteredUser() {

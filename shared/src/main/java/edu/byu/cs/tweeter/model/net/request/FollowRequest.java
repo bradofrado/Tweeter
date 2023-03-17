@@ -3,13 +3,15 @@ package edu.byu.cs.tweeter.model.net.request;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowersCountRequest {
+public class FollowRequest {
     private AuthToken authToken;
-    private String targetUser;
+    private String followeeAlias;
 
-    public FollowersCountRequest(AuthToken authToken, String targetUser) {
+    private FollowRequest() {}
+
+    public FollowRequest(AuthToken authToken, String followeeAlias) {
         this.authToken = authToken;
-        this.targetUser = targetUser;
+        this.followeeAlias = followeeAlias;
     }
 
 
@@ -21,11 +23,11 @@ public class FollowersCountRequest {
         this.authToken = authToken;
     }
 
-    public String getTargetUser() {
-        return targetUser;
+    public String getFolloweeAlias() {
+        return followeeAlias;
     }
 
-    public void setTargetUser(String targetUser) {
-        this.targetUser = targetUser;
+    public void setFolloweeAlias(String followeeAlias) {
+        this.followeeAlias = followeeAlias;
     }
 }

@@ -67,6 +67,6 @@ public class ServerFacade {
         Map<String, String> headers = new HashMap<>();
         headers.put(AUTH_TOKEN_HEADER, request.getAuthToken().getToken());
 
-        return clientCommunicator.doGet(urlPath + "/" + request.getTargetUser().getAlias(),headers, FollowersCountResponse.class);
+        return clientCommunicator.doGet(urlPath + "/" + request.getTargetUser(),headers, FollowersCountResponse.class);
     }
 }

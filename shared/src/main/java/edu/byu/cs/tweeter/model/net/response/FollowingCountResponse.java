@@ -1,6 +1,6 @@
 package edu.byu.cs.tweeter.model.net.response;
 
-public class FollowersCountResponse extends Response {
+public class FollowingCountResponse extends Response {
     private int count;
 
     /**
@@ -8,7 +8,7 @@ public class FollowersCountResponse extends Response {
      *
      * @param count the amount of followers a user has
      */
-    public FollowersCountResponse(int count) {
+    public FollowingCountResponse(int count) {
         super(true);
         this.count = count;
     }
@@ -18,7 +18,7 @@ public class FollowersCountResponse extends Response {
      *
      * @param message a message describing why the request was unsuccessful.
      */
-    public FollowersCountResponse(String message) {
+    public FollowingCountResponse(String message) {
         super(false, message);
     }
 
