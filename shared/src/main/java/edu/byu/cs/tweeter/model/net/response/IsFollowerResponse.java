@@ -1,7 +1,5 @@
 package edu.byu.cs.tweeter.model.net.response;
 
-import edu.byu.cs.tweeter.model.net.request.IsFollowerRequest;
-
 public class IsFollowerResponse extends Response {
     private boolean isFollower;
 
@@ -15,11 +13,11 @@ public class IsFollowerResponse extends Response {
     }
 
 
-    public boolean isFollower() {
+    public boolean getIsFollower() {
         return isFollower;
     }
 
-    public void setFollower(boolean follower) {
-        isFollower = follower;
+    public void setIsFollower(boolean isFollower) {
+        this.isFollower = isFollower;
     }
 }

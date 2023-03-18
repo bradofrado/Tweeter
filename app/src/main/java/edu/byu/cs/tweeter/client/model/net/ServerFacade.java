@@ -57,7 +57,7 @@ public class ServerFacade {
     public final static String IS_FOLLOWER_URL = "/isfollower";
     public final static String GET_FOLLOWEES_URL = "/following";
     public final static String GET_FOLLOWERS_COUNT_URL = "/followers/count";
-    public final static String GET_FOLLOWEES_COUNT_URL = "/followees/count";
+    public final static String GET_FOLLOWEES_COUNT_URL = "/following/count";
     public final static String FOLLOW_URL = "/follow";
     public final static String UNFOLLOW_URL = "/unfollow";
     public final static String GET_FEED_URL = "/feed";

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import java.io.IOException;
-import java.util.Random;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -41,7 +40,7 @@ public class IsFollowerTask extends AuthenticatedTask {
     protected void processTask() throws IOException, TweeterRemoteException {
         IsFollowerResponse response = getServerFacade().isFollower(new IsFollowerRequest(authToken, follower.getAlias(), followee.getAlias()));
 
-        isFollower = response.isFollower();
+        isFollower = response.getIsFollower();
     }
 
     @Override

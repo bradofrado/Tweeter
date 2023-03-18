@@ -36,7 +36,7 @@ public class StatusServiceTest {
         currentAuthToken = new AuthToken("abc");
 
         statusServiceSpy = Mockito.spy(new StatusService());
-        
+
         Mockito.when(statusServiceSpy.getCurrUserAuthToken()).thenReturn(currentAuthToken);
 
         // Setup an observer for the StatusService

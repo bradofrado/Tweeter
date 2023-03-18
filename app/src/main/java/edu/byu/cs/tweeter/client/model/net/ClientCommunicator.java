@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +79,14 @@ class ClientCommunicator {
             connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(TIMEOUT_MILLIS);
             requestStrategy.setRequestMethod(connection);
+
+            if (headers == null) {
+                headers = new HashMap<>();
+            }
+
+            if (!headers.containsKey("Content-Type")) {
+                headers.put("Content-Type", "application/json");
+            }
 
             if(headers != null) {
                 for (String headerKey : headers.keySet()) {
