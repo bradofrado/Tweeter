@@ -77,24 +77,24 @@ public class FollowDAO {
         assert request.getLimit() > 0;
         assert request.getFollowerAlias() != null;
 
-        List<User> allFollowees = getDummyFollowees();
-        List<User> responseFollowees = new ArrayList<>(request.getLimit());
+        List<User> allFollowers = getDummyFollowers();
+        List<User> responseFollowers = new ArrayList<>(request.getLimit());
 
         boolean hasMorePages = false;
 
         if(request.getLimit() > 0) {
-            if (allFollowees != null) {
-                int followeesIndex = getFolloweesStartingIndex(request.getLastFollower(), allFollowees);
+            if (allFollowers != null) {
+                int followeesIndex = getFollowersStartingIndex(request.getLastFollower(), allFollowers);
 
-                for(int limitCounter = 0; followeesIndex < allFollowees.size() && limitCounter < request.getLimit(); followeesIndex++, limitCounter++) {
-                    responseFollowees.add(allFollowees.get(followeesIndex));
+                for(int limitCounter = 0; followeesIndex < allFollowers.size() && limitCounter < request.getLimit(); followeesIndex++, limitCounter++) {
+                    responseFollowers.add(allFollowers.get(followeesIndex));
                 }
 
-                hasMorePages = followeesIndex < allFollowees.size();
+                hasMorePages = followeesIndex < allFollowers.size();
             }
         }
 
-        return new FollowerResponse(responseFollowees, hasMorePages);
+        return new FollowerResponse(responseFollowers, hasMorePages);
     }
 
     /**
@@ -164,6 +164,16 @@ public class FollowDAO {
      * @return the followees.
      */
     List<User> getDummyFollowees() {
+        return getFakeData().getFakeUsers();
+    }
+
+    /**
+     * Returns the list of dummy follower data. This is written as a separate method to allow
+     * mocking of the followers.
+     *
+     * @return the followees.
+     */
+    List<User> getDummyFollowers() {
         return getFakeData().getFakeUsers();
     }
 

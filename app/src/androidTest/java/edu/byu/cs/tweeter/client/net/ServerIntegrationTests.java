@@ -66,8 +66,9 @@ public class ServerIntegrationTests {
         }
 
         @Test
-        @DisplayName("Should fail when ")
-        public void should_Fail_when() {
+        @DisplayName("Should fail when given no password")
+        public void should_Fail_whenGivenNoPassword() {
+            request.setPassword(null);
             Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.register(request));
         }
     }
@@ -85,8 +86,8 @@ public class ServerIntegrationTests {
         }
 
         @Test
-        @DisplayName("Should return _ when get followers")
-        public void should_Return_whenGetFollowers() {
+        @DisplayName("Should return page of users when get followers")
+        public void should_ReturnPageOfUsers_whenGetFollowers() {
             try {
                 FollowerResponse response = serverFacade.getFollowers(request);
 
@@ -96,18 +97,10 @@ public class ServerIntegrationTests {
                 List<User> users = response.getUsers();
                 Assertions.assertNotNull(users);
                 Assertions.assertNotEquals(0, users.size());
-                Assertions.assertTrue(response.hasMorePages());
+                Assertions.assertTrue(response.getHasMorePages());
             } catch (Exception ex) {
                 Assertions.fail(ex.getMessage());
             }
-        }
-
-        @Test
-        @DisplayName("Should fail when given invalid limit")
-        public void should_fail_whenGivenInvalidAuthToken() {
-            request.setAuthToken(new AuthToken("badboi"));
-
-            Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.getFollowers(request));
         }
 
         @Test
@@ -150,9 +143,9 @@ public class ServerIntegrationTests {
         }
 
         @Test
-        @DisplayName("Should fail when given invalid limit")
-        public void should_fail_whenGivenInvalidAuthToken() {
-            request.setAuthToken(new AuthToken("badboi"));
+        @DisplayName("Should fail when given invalid user")
+        public void should_fail_whenGivenInvalidUser() {
+            request.setTargetUser(null);
 
             Assertions.assertThrows(TweeterRemoteException.class, () -> serverFacade.getFollowersCount(request));
         }

@@ -4,8 +4,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowerResponse extends Response {
-    private boolean hasMorePages;
+public class FollowerResponse extends PagedResponse {
     private List<User> users;
 
     /**
@@ -15,27 +14,8 @@ public class FollowerResponse extends Response {
      * @param users The list of followers
      */
     public FollowerResponse(List<User> users, boolean hasMorePages) {
-        super(true);
-        this.hasMorePages = hasMorePages;
+        super(true, hasMorePages);
         this.users = users;
-    }
-
-    /**
-     * Creates a response indicating that the corresponding request was unsuccessful.
-     *
-     * @param message a message describing why the request was unsuccessful.
-     */
-    public FollowerResponse(String message) {
-        super(false, message);
-    }
-
-
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-
-    public void setHasMorePages(boolean hasMorePages) {
-        this.hasMorePages = hasMorePages;
     }
 
     public List<User> getUsers() {

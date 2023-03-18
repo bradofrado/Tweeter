@@ -4,27 +4,12 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 
-public class FeedResponse extends Response {
-    private boolean hasMorePages;
+public class FeedResponse extends PagedResponse {
     private List<Status> statuses;
 
     public FeedResponse(List<Status> statuses, boolean hasMorePages) {
-        super(true);
-        this.hasMorePages = hasMorePages;
+        super(true, hasMorePages);
         this.statuses = statuses;
-    }
-
-    public FeedResponse(String message) {
-        super(false, message);
-    }
-
-
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-
-    public void setHasMorePages(boolean hasMorePages) {
-        this.hasMorePages = hasMorePages;
     }
 
     public List<Status> getStatuses() {

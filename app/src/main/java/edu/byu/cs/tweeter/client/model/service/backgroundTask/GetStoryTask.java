@@ -28,6 +28,6 @@ public class GetStoryTask extends PagedTask<Status> {
     protected Pair<List<Status>, Boolean> getItems() throws IOException, TweeterRemoteException {
         StoryResponse response = getServerFacade().getStory(new StoryRequest(authToken, getTargetUser().getAlias(), getLimit(), getLastItem()));
 
-        return new Pair<>(response.getStatuses(), response.hasMorePages());
+        return new Pair<>(response.getStatuses(), response.getHasMorePages());
     }
 }

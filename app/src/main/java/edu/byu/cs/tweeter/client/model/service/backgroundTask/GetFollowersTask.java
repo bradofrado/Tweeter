@@ -25,8 +25,9 @@ public class GetFollowersTask extends PagedTask<User> {
 
     @Override
     protected Pair<List<User>, Boolean> getItems() throws IOException, TweeterRemoteException {
-        FollowerResponse response = getServerFacade().getFollowers(new FollowerRequest(authToken, getTargetUser().getAlias(), getLimit(), getLastItem().getAlias()));
+        String lastFollowerAlias = getLastItem() != null ? getLastItem().getAlias() : null;
+        FollowerResponse response = getServerFacade().getFollowers(new FollowerRequest(authToken, getTargetUser().getAlias(), getLimit(), lastFollowerAlias));
 
-        return new Pair<>(response.getUsers(), response.hasMorePages());
+        return new Pair<>(response.getUsers(), response.getHasMorePages());
     }
 }

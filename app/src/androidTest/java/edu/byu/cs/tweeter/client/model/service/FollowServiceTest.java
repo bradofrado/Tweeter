@@ -1,4 +1,4 @@
-package edu.byu.cs.tweeter.client.service;
+package edu.byu.cs.tweeter.client.model.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.observer.PagedTaskObserver;
@@ -32,7 +33,8 @@ public class FollowServiceTest {
     @BeforeEach
     public void setup() {
         currentUser = new User("FirstName", "LastName", null);
-        currentAuthToken = new AuthToken();
+        currentAuthToken = new AuthToken("asb");
+        Cache.getInstance().setCurrUserAuthToken(currentAuthToken);
 
         followServiceSpy = Mockito.spy(new FollowService());
 

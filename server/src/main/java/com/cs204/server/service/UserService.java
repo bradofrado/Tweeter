@@ -40,8 +40,7 @@ public class UserService {
             throw new RuntimeException("[Bad Request] Missing an image");
         }
 
-        // TODO: Generates dummy data. Replace with a real implementation.
-        User user = getDummyUser();
+        User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(), request.getImage());
         AuthToken authToken = getDummyAuthToken();
         return new RegisterResponse(user, authToken);
     }
