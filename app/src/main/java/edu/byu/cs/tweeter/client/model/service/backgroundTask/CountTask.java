@@ -21,12 +21,13 @@ public abstract class CountTask extends AuthenticatedTask {
     }
 
     @Override
-    protected void processTask() {
-
+    protected void loadSuccessBundle(Bundle msgBundle) {
+        msgBundle.putInt(COUNT_KEY, getCount());
     }
 
-    @Override
-    protected void loadSuccessBundle(Bundle msgBundle) {
-        msgBundle.putInt(COUNT_KEY, 20);
+    protected abstract int getCount();
+
+    protected User getTargetUser() {
+        return targetUser;
     }
 }

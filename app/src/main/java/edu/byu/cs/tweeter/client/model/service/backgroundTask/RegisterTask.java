@@ -2,8 +2,13 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Handler;
 
+import java.io.IOException;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
+import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 import edu.byu.cs.tweeter.util.Pair;
 
 /**
@@ -45,9 +50,9 @@ public class RegisterTask extends AuthenicationTask {
 
 
     @Override
-    protected Pair<User, AuthToken> doAuthentication() {
-        User registeredUser = getFakeData().getFirstUser();
-        AuthToken authToken = getFakeData().getAuthToken();
-        return new Pair<>(registeredUser, authToken);
+    protected Pair<User, AuthToken> doAuthentication() throws IOException, TweeterRemoteException {
+        RegisterResponse response = getServerFacade().register(new RegisterRequest(firstName, lastName, username, password, image));
+
+        return new Pair<>(response.getRegisteredUser(), response.getAuthToken());
     }
 }

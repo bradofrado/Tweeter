@@ -2,10 +2,14 @@ package edu.byu.cs.tweeter.client.model.service.backgroundTask;
 
 import android.os.Handler;
 
+import java.io.IOException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.net.request.FollowerRequest;
+import edu.byu.cs.tweeter.model.net.response.FollowerResponse;
 import edu.byu.cs.tweeter.util.Pair;
 
 /**
@@ -20,8 +24,10 @@ public class GetFollowersTask extends PagedTask<User> {
     }
 
     @Override
-    protected Pair<List<User>, Boolean> getItems() {
-        Pair<List<User>, Boolean> pageOfUsers = getFakeData().getPageOfUsers(getLastItem(), getLimit(), getTargetUser());
-        return pageOfUsers;
+    protected Pair<List<User>, Boolean> getItems() throws IOException, TweeterRemoteException {
+        String lastFollowerAlias = getLastItem() != null ? getLastItem().getAlias() : null;
+        FollowerResponse response = getServerFacade().getFollowers(new FollowerRequest(authToken, getTargetUser().getAlias(), getLimit(), lastFollowerAlias));
+
+        return new Pair<>(response.getUsers(), response.getHasMorePages());
     }
 }

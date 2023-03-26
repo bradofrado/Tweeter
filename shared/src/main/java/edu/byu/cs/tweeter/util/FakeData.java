@@ -1,10 +1,13 @@
 package edu.byu.cs.tweeter.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
@@ -51,7 +54,7 @@ public class FakeData {
     /**
      * Generated auth token.
      */
-    private final AuthToken authToken = new AuthToken();
+    private final AuthToken authToken = new AuthToken("test token");
 
     /**
      * List of generated users.
@@ -113,7 +116,9 @@ public class FakeData {
     private void generateFakeStatuses() {
         allStatuses.clear();
 
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = getCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat("E MMM d HH:mm:ss z Y");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         List<User> fakeUsers = getFakeUsers();
 
         for (int i = 0; i < 2; ++i) {
@@ -127,7 +132,7 @@ public class FakeData {
                         "\nMy friend " + mention.getAlias() + " likes this website" +
                         "\n" + url;
                 calendar.add(Calendar.MINUTE, 1);
-                String datetime = calendar.getTime().toString();
+                String datetime = sdf.format(calendar.getTime());
                 Status status = new Status(post, sender, datetime, urls, mentions);
                 allStatuses.add(status);
             }
@@ -241,4 +246,11 @@ public class FakeData {
         return allStatuses;
     }
 
+    private Calendar getCalendar() {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.set(2023, 3, 22, 10, 10, 10);
+
+        return calendar;
+    }
 }

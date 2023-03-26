@@ -5,7 +5,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.IOException;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
+import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.net.request.LogoutRequest;
+import edu.byu.cs.tweeter.model.net.response.LogoutResponse;
 
 /**
  * Background task that logs out a user (i.e., ends a session).
@@ -18,8 +23,8 @@ public class LogoutTask extends AuthenticatedTask {
     }
 
     @Override
-    protected void processTask() {
-
+    protected void processTask() throws IOException, TweeterRemoteException {
+        LogoutResponse response = getServerFacade().logout(new LogoutRequest(authToken));
     }
 
     @Override
