@@ -10,7 +10,7 @@ import edu.byu.cs.tweeter.model.net.response.FollowingCountResponse;
 public class GetFollowingCountHandler implements RequestHandler<FollowingCountRequest, FollowingCountResponse> {
     @Override
     public FollowingCountResponse handleRequest(FollowingCountRequest input, Context context) {
-        FollowService followService = new FollowService();
+        FollowService followService = new FollowService(null, null);
         return followService.getFollowingCount(input);
     }
 }

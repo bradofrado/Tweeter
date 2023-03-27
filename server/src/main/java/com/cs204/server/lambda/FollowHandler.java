@@ -10,7 +10,7 @@ import edu.byu.cs.tweeter.model.net.response.FollowResponse;
 public class FollowHandler implements RequestHandler<FollowRequest, FollowResponse> {
     @Override
     public FollowResponse handleRequest(FollowRequest input, Context context) {
-        FollowService followService = new FollowService();
+        FollowService followService = new FollowService(null, null);
         return followService.follow(input);
     }
 }

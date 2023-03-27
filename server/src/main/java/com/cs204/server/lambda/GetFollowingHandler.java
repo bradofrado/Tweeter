@@ -23,7 +23,7 @@ public class GetFollowingHandler implements RequestHandler<FollowingRequest, Fol
      */
     @Override
     public FollowingResponse handleRequest(FollowingRequest request, Context context) {
-        FollowService service = new FollowService();
+        FollowService service = new FollowService(null, null);
         return service.getFollowees(request);
     }
 }
