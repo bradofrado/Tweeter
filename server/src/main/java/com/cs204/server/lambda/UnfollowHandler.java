@@ -1,17 +1,13 @@
 package com.cs204.server.lambda;
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.cs204.server.service.FollowService;
 
 import edu.byu.cs.tweeter.model.net.request.UnfollowRequest;
 import edu.byu.cs.tweeter.model.net.response.UnfollowResponse;
 
-public class UnfollowHandler implements RequestHandler<UnfollowRequest, UnfollowResponse> {
+public class UnfollowHandler extends BaseHandler<UnfollowRequest, UnfollowResponse> {
     @Override
-    public UnfollowResponse handleRequest(UnfollowRequest input, Context context) {
-        FollowService followService = new FollowService(null, null);
-
-        return followService.unfollow(input);
+    public UnfollowResponse handleRequest(UnfollowRequest input) {
+       return getInstance(FollowService.class).unfollow(input);
     }
 }

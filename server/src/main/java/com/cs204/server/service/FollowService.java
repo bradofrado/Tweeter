@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.inject.Inject;
+
 /**
  * Contains the business logic for getting the users a user is following.
  */
@@ -32,6 +34,7 @@ public class FollowService {
     private FollowDAO followDAO;
     private UserDAO userDAO;
 
+    @Inject
     public FollowService(FollowDAO followDAO, UserDAO userDAO) {
         this.followDAO = followDAO;
         this.userDAO = userDAO;

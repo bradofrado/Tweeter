@@ -20,7 +20,7 @@ import com.cs204.server.dao.dynamo.FollowDynamoDAO;
 public class FollowServiceTest {
 
     private FollowingRequest request;
-    private DataPage<String> expectedResponse;
+    private FollowingResponse expectedResponse;
     private FollowDAO mockFollowDAO;
     private UserDAO mockUserDAO;
     private FollowService followServiceSpy;
@@ -42,11 +42,13 @@ public class FollowServiceTest {
         request = new FollowingRequest(authToken, currentUser.getAlias(), 3, null);
 
         // Setup a mock FollowDAO that will return known responses
-        expectedResponse = new DataPage<String>();
-        expectedResponse.setValues(Arrays.asList(resultUser1.getAlias(), resultUser2.getAlias(), resultUser3.getAlias()));
-        expectedResponse.setHasMorePages(false);
+        DataPage<String> daoResponse = new DataPage<String>();
+        daoResponse.setValues(Arrays.asList(resultUser1.getAlias(), resultUser2.getAlias(), resultUser3.getAlias()));
+        daoResponse.setHasMorePages(false);
+
+        expectedResponse = new FollowingResponse(Arrays.asList(resultUser1, resultUser2, resultUser3), daoResponse.isHasMorePages());
         mockFollowDAO = Mockito.mock(FollowDynamoDAO.class);
-        Mockito.when(mockFollowDAO.getPageOfFollowees(request.getFollowerAlias(), request.getLimit(), request.getLastFolloweeAlias())).thenReturn(expectedResponse);
+        Mockito.when(mockFollowDAO.getPageOfFollowees(request.getFollowerAlias(), request.getLimit(), request.getLastFolloweeAlias())).thenReturn(daoResponse);
 
         mockUserDAO = Mockito.spy(UserDAO.class);
         Mockito.when(mockUserDAO.getUser(resultUser1.getAlias())).thenReturn(resultUser1);
