@@ -1,9 +1,11 @@
-package com.cs204.server.dao.dynamo;
+package com.cs204.server.dao.dynamo.model;
+
+import com.cs204.server.dao.dynamo.FollowDynamoDAO;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
 
 @DynamoDbBean
-public class Follower {
+public class FollowerBean {
     private String follower_handle;
     private String follower_name;
     private String followee_handle;

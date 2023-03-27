@@ -2,6 +2,7 @@ package com.cs204.server.dao.dynamo;
 
 import com.cs204.server.dao.DataPage;
 import com.cs204.server.dao.FollowDAO;
+import com.cs204.server.dao.dynamo.model.FollowerBean;
 
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.*;
@@ -42,13 +43,13 @@ public class FollowDynamoDAO implements FollowDAO {
      * @param followee_handle
      * @return
      */
-    public Follower getFollowsItem(String follower_handle, String followee_handle) {
-        DynamoDbTable<Follower> table = enhancedClient.table(TableName, TableSchema.fromBean(Follower.class));
+    public FollowerBean getFollowsItem(String follower_handle, String followee_handle) {
+        DynamoDbTable<FollowerBean> table = enhancedClient.table(TableName, TableSchema.fromBean(FollowerBean.class));
         Key key = Key.builder()
                 .partitionValue(follower_handle).sortValue(followee_handle)
                 .build();
 
-        Follower visit = table.getItem(key);
+        FollowerBean visit = table.getItem(key);
         return visit;
     }
 
@@ -62,13 +63,13 @@ public class FollowDynamoDAO implements FollowDAO {
      * @param followee_name
      */
     public void setFollower(String follower_name, String follower_handle, String followee_name, String followee_handle) {
-        DynamoDbTable<Follower> table = enhancedClient.table(TableName, TableSchema.fromBean(Follower.class));
+        DynamoDbTable<FollowerBean> table = enhancedClient.table(TableName, TableSchema.fromBean(FollowerBean.class));
         Key key = Key.builder()
                 .partitionValue(follower_handle).sortValue(followee_handle)
                 .build();
 
         // load it if it exists
-        Follower follower = table.getItem(key);
+        FollowerBean follower = table.getItem(key);
         if(follower != null) {
             follower.setFollower_handle(follower_handle);
             follower.setFollower_name(follower_name);
@@ -76,7 +77,7 @@ public class FollowDynamoDAO implements FollowDAO {
             follower.setFollowee_name(followee_name);
             table.updateItem(follower);
         } else {
-            Follower newFollower = new Follower();
+            FollowerBean newFollower = new FollowerBean();
             newFollower.setFollower_handle(follower_handle);
             newFollower.setFollower_name(follower_name);
             newFollower.setFollowee_handle(followee_handle);
@@ -91,15 +92,16 @@ public class FollowDynamoDAO implements FollowDAO {
      * @param followee_handle
      */
     public void deleteFollower(String follower_handle, String followee_handle) {
-        DynamoDbTable<Follower> table = enhancedClient.table(TableName, TableSchema.fromBean(Follower.class));
+        DynamoDbTable<FollowerBean> table = enhancedClient.table(TableName, TableSchema.fromBean(FollowerBean.class));
         Key key = Key.builder()
                 .partitionValue(follower_handle).sortValue(followee_handle)
                 .build();
         table.deleteItem(key);
     }
 
+    @Override
     public DataPage<String> getPageOfFollowers(String targetUserAlias, int pageSize, String lastUserAlias ) {
-        DynamoDbTable<Follower> table = enhancedClient.table(TableName, TableSchema.fromBean(Follower.class));
+        DynamoDbTable<FollowerBean> table = enhancedClient.table(TableName, TableSchema.fromBean(FollowerBean.class));
         Key key = Key.builder()
                 .partitionValue(targetUserAlias)
                 .build();
@@ -119,12 +121,12 @@ public class FollowDynamoDAO implements FollowDAO {
 
         QueryEnhancedRequest request = requestBuilder.build();
 
-        DataPage<Follower> result = new DataPage<Follower>();
+        DataPage<FollowerBean> result = new DataPage<FollowerBean>();
 
-        PageIterable<Follower> pages = table.query(request);
+        PageIterable<FollowerBean> pages = table.query(request);
         pages.stream()
                 .limit(1)
-                .forEach((Page<Follower> page) -> {
+                .forEach((Page<FollowerBean> page) -> {
                     result.setHasMorePages(page.lastEvaluatedKey() != null);
                     page.items().forEach(visit -> result.getValues().add(visit));
                 });
@@ -137,8 +139,9 @@ public class FollowDynamoDAO implements FollowDAO {
         return null;
     }
 
+    @Override
     public DataPage<String> getPageOfFollowees(String targetUserAlias, int pageSize, String lastUserAlias ) {
-        DynamoDbIndex<Follower> index=enhancedClient.table(TableName, TableSchema.fromBean(Follower.class)).index(IndexName);
+        DynamoDbIndex<FollowerBean> index=enhancedClient.table(TableName, TableSchema.fromBean(FollowerBean.class)).index(IndexName);
         Key key=Key.builder()
                 .partitionValue(targetUserAlias)
                 .build();
@@ -157,13 +160,13 @@ public class FollowDynamoDAO implements FollowDAO {
 
         QueryEnhancedRequest request=requestBuilder.build();
 
-        DataPage<Follower> result=new DataPage<Follower>();
+        DataPage<FollowerBean> result=new DataPage<FollowerBean>();
 
-        SdkIterable<Page<Follower>> sdkIterable=index.query(request);
-        PageIterable<Follower> pages=PageIterable.create(sdkIterable);
+        SdkIterable<Page<FollowerBean>> sdkIterable=index.query(request);
+        PageIterable<FollowerBean> pages=PageIterable.create(sdkIterable);
         pages.stream()
                 .limit(1)
-                .forEach((Page<Follower> page) -> {
+                .forEach((Page<FollowerBean> page) -> {
                     result.setHasMorePages(page.lastEvaluatedKey() != null);
                     page.items().forEach(visit -> result.getValues().add(visit));
                 });

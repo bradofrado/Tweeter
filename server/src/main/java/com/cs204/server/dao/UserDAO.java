@@ -8,4 +8,6 @@ import edu.byu.cs.tweeter.model.net.response.UserResponse;
 //sk: none
 public interface UserDAO {
     User getUser(String alias);
+    void setUser(String alias, String firstName, String lastName, String imageUrl);
+    void deleteUser(String alias);
 }
