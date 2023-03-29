@@ -1,8 +1,17 @@
 package com.cs204.server.service;
 
+import com.cs204.server.dao.DataPage;
+import com.cs204.server.dao.FeedDAO;
+import com.cs204.server.dao.FollowDAO;
+import com.cs204.server.dao.StoryDAO;
+import com.cs204.server.dao.UserDAO;
+
 import java.util.List;
 
+import javax.inject.Inject;
+
 import edu.byu.cs.tweeter.model.domain.Status;
+import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.FeedRequest;
 import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.net.request.StoryRequest;
@@ -13,6 +22,17 @@ import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
 
 public class StatusService {
+    private FeedDAO feedDAO;
+    private StoryDAO storyDAO;
+    private UserDAO userDAO;
+
+    @Inject
+    public StatusService(FeedDAO feedDAO, StoryDAO storyDAO, UserDAO userDAO) {
+        this.feedDAO = feedDAO;
+        this.storyDAO = storyDAO;
+        this.userDAO = userDAO;
+    }
+
     public FeedResponse getFeed(FeedRequest request) {
         if(request.getTargetUser() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
@@ -22,9 +42,14 @@ public class StatusService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
-        Pair<List<Status>, Boolean> pageOfStatus = getFakeData().getPageOfStatus(request.getLastStatus(), request.getLimit());
+        String lastPosted = request.getLastStatus() != null ? request.getLastStatus().getUser().getAlias() : null;
 
-        return new FeedResponse(pageOfStatus.getFirst(), pageOfStatus.getSecond());
+        DataPage<Status> page = feedDAO.getPageOfFeeds(request.getTargetUser(), request.getLimit(), lastPosted);
+        page.getValues().forEach(p -> {
+            User user = userDAO.getUser(p.getUser().getAlias());
+            p.setUser(user);
+        });
+        return new FeedResponse(page.getValues(), page.isHasMorePages());
     }
 
     public StoryResponse getStory(StoryRequest request) {

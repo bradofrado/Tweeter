@@ -4,6 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.cs204.server.module.MainModule;
+import com.cs204.server.module.TestModule;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Guice;
@@ -24,7 +25,7 @@ public abstract class BaseHandler<I, O> implements RequestStreamHandler {
     private Injector injector;
     private Injector getInjector() {
         if (injector == null) {
-            injector = Guice.createInjector(new MainModule());
+            injector = Guice.createInjector(new TestModule());
         }
 
         return injector;
