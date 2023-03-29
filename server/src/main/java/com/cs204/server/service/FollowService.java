@@ -32,16 +32,13 @@ import javax.inject.Inject;
 /**
  * Contains the business logic for getting the users a user is following.
  */
-public class FollowService {
+public class FollowService extends AuthenticatedService {
     private FollowDAO followDAO;
-    private UserDAO userDAO;
-    private AuthTokenDAO authTokenDAO;
 
     @Inject
     public FollowService(FollowDAO followDAO, UserDAO userDAO, AuthTokenDAO authTokenDAO) {
+        super(authTokenDAO, userDAO);
         this.followDAO = followDAO;
-        this.userDAO = userDAO;
-        this.authTokenDAO = authTokenDAO;
     }
     /**
      * Returns the users that the user specified in the request is following. Uses information in
@@ -169,13 +166,5 @@ public class FollowService {
         int count = followDAO.getFolloweeCount(request.getTargetUser());
 
         return new FollowingCountResponse(count);
-    }
-
-    User getAuthenticatedUser(AuthToken authToken) {
-        String alias = authTokenDAO.getUser(authToken);
-        if (alias == null) {
-            throw new RuntimeException("[Bad Request] Bad or expired auth token");
-        }
-        return userDAO.getUser(alias);
     }
 }
