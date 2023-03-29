@@ -12,6 +12,7 @@ import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 
+import com.cs204.server.dao.AuthTokenDAO;
 import com.cs204.server.dao.DataPage;
 import com.cs204.server.dao.FollowDAO;
 import com.cs204.server.dao.UserDAO;
@@ -23,6 +24,7 @@ public class FollowServiceTest {
     private FollowingResponse expectedResponse;
     private FollowDAO mockFollowDAO;
     private UserDAO mockUserDAO;
+    private AuthTokenDAO mockAuthDAO;
     private FollowService followServiceSpy;
 
     @BeforeEach
@@ -55,7 +57,10 @@ public class FollowServiceTest {
         Mockito.when(mockUserDAO.getUser(resultUser2.getAlias())).thenReturn(resultUser2);
         Mockito.when(mockUserDAO.getUser(resultUser3.getAlias())).thenReturn(resultUser3);
 
-        followServiceSpy = Mockito.spy(new FollowService(mockFollowDAO, mockUserDAO));
+        mockAuthDAO = Mockito.spy(AuthTokenDAO.class);
+        Mockito.when(mockAuthDAO.getUser(Mockito.any())).thenReturn(currentUser.getAlias());
+
+        followServiceSpy = Mockito.spy(new FollowService(mockFollowDAO, mockUserDAO, mockAuthDAO));
     }
 
     /**

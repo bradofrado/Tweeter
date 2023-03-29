@@ -204,7 +204,12 @@ public class TestModule extends AbstractModule {
         }
 
         @Override
-        public void setUser(String alias, String firstName, String lastName, String imageUrl) {
+        public User getUser(String username, String password) {
+            return getFakeData().getFakeUsers().get(0);
+        }
+
+        @Override
+        public void setUser(String alias, String firstName, String lastName, String imageUrl, String password) {
 
         }
 
@@ -273,6 +278,16 @@ public class TestModule extends AbstractModule {
         @Override
         public String getUser(AuthToken authToken) {
             return getFakeData().getFakeUsers().get(0).getAlias();
+        }
+
+        @Override
+        public AuthToken setAuthToken(AuthToken authToken, String alias, long timeout) {
+            return authToken;
+        }
+
+        @Override
+        public void deleteAuthToken(AuthToken authToken) {
+
         }
     }
 }

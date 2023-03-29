@@ -10,6 +10,7 @@ public class UserBean {
     private String firstName;
     private String lastName;
     private String imageUrl;
+    private String password;
 
     @DynamoDbPartitionKey
     public String getAlias() {
@@ -47,5 +48,14 @@ public class UserBean {
 
     public User getUser() {
         return new User(getFirstName(), getLastName(), getAlias(), getImageUrl());
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

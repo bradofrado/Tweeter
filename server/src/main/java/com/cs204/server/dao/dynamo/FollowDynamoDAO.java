@@ -62,6 +62,11 @@ public class FollowDynamoDAO extends PageDynamoDAO<FollowerBean> implements Foll
     }
 
     @Override
+    public Integer getFollowerCount(String follower) {
+        return null;
+    }
+
+    @Override
     public DataPage<String> getPageOfFollowees(String targetUserAlias, int pageSize, String lastUserAlias) {
         return convertDataPage(getPageOfItemsIndex(targetUserAlias, pageSize, lastUserAlias), p -> p.getFollowee_handle());
     }

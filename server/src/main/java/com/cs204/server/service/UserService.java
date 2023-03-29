@@ -1,5 +1,9 @@
 package com.cs204.server.service;
 
+import com.cs204.server.dao.AuthTokenDAO;
+import com.cs204.server.dao.UserDAO;
+import com.cs204.server.util.HashingUtil;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
@@ -13,6 +17,13 @@ import edu.byu.cs.tweeter.model.net.response.UserResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 
 public class UserService {
+    private static final int AUTH_TOKEN_TIMEOUT = 1000000;
+    private UserDAO userDAO;
+    private AuthTokenDAO authTokenDAO;
+    public UserService(UserDAO userDAO, AuthTokenDAO authTokenDAO) {
+        this.userDAO = userDAO;
+        this.authTokenDAO = authTokenDAO;
+    }
 
     public LoginResponse login(LoginRequest request) {
         if(request.getUsername() == null){
@@ -21,9 +32,11 @@ public class UserService {
             throw new RuntimeException("[Bad Request] Missing a password");
         }
 
-        // TODO: Generates dummy data. Replace with a real implementation.
-        User user = getDummyUser();
-        AuthToken authToken = getDummyAuthToken();
+        User user = userDAO.getUser(request.getUsername(), HashingUtil.hash(request.getPassword()));
+        if (user == null) {
+            return new LoginResponse("Invalid Username or password");
+        }
+        AuthToken authToken = createAuthToken(user.getAlias());
         return new LoginResponse(user, authToken);
     }
 
@@ -40,8 +53,10 @@ public class UserService {
             throw new RuntimeException("[Bad Request] Missing an image");
         }
 
+        userDAO.setUser(request.getUsername(), request.getFirstName(), request.getLastName(),
+                request.getImage(), HashingUtil.hash(request.getPassword()));
         User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(), request.getImage());
-        AuthToken authToken = getDummyAuthToken();
+        AuthToken authToken = createAuthToken(request.getUsername());
         return new RegisterResponse(user, authToken);
     }
 
@@ -49,6 +64,8 @@ public class UserService {
         if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
+
+        authTokenDAO.deleteAuthToken(request.getAuthToken());
 
         return new LogoutResponse();
     }
@@ -60,7 +77,7 @@ public class UserService {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
 
-        User user = getFakeData().findUserByAlias(request.getAlias());
+        User user = userDAO.getUser(request.getAlias());
 
         if (user == null) {
             return new UserResponse("Could not find user " + request.getAlias());
@@ -69,33 +86,8 @@ public class UserService {
         return new UserResponse(user);
     }
 
-    /**
-     * Returns the dummy user to be returned by the login operation.
-     * This is written as a separate method to allow mocking of the dummy user.
-     *
-     * @return a dummy user.
-     */
-    User getDummyUser() {
-        return getFakeData().getFirstUser();
-    }
-
-    /**
-     * Returns the dummy auth token to be returned by the login operation.
-     * This is written as a separate method to allow mocking of the dummy auth token.
-     *
-     * @return a dummy auth token.
-     */
-    AuthToken getDummyAuthToken() {
-        return getFakeData().getAuthToken();
-    }
-
-    /**
-     * Returns the {@link FakeData} object used to generate dummy users and auth tokens.
-     * This is written as a separate method to allow mocking of the {@link FakeData}.
-     *
-     * @return a {@link FakeData} instance.
-     */
-    FakeData getFakeData() {
-        return FakeData.getInstance();
+    private AuthToken createAuthToken(String alias) {
+        return authTokenDAO.setAuthToken(new AuthToken(java.util.UUID.randomUUID().toString()), alias,
+                (int) (System.currentTimeMillis() + AUTH_TOKEN_TIMEOUT));
     }
 }

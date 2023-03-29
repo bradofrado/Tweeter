@@ -9,4 +9,6 @@ import edu.byu.cs.tweeter.model.domain.User;
 //authtoken, timeout, alias
 public interface AuthTokenDAO {
     String getUser(AuthToken authToken);
+    AuthToken setAuthToken(AuthToken authToken, String alias, long timeout);
+    void deleteAuthToken(AuthToken authToken);
 }

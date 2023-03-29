@@ -17,7 +17,17 @@ public class UserDynamoDAO extends DynamoDAO<UserBean> implements UserDAO {
     }
 
     @Override
-    public void setUser(String alias, String firstName, String lastName, String imageUrl) {
+    public User getUser(String username, String password) {
+        UserBean userBean = getItem(username, null);
+        if (userBean.getPassword().equals(password)) {
+            return userBean.getUser();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setUser(String alias, String firstName, String lastName, String imageUrl, String password) {
         setItem(alias, null, new ItemSetter<>() {
             @Override
             public void setItem(UserBean item) {
@@ -25,6 +35,7 @@ public class UserDynamoDAO extends DynamoDAO<UserBean> implements UserDAO {
                 item.setFirstName(firstName);
                 item.setLastName(lastName);
                 item.setImageUrl(imageUrl);
+                item.setPassword(password);
             }
 
             @Override
