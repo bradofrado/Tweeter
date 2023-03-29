@@ -22,8 +22,8 @@ public class FollowDynamoDAO extends PageDynamoDAO<FollowerBean> implements Foll
      * @param followee_handle
      * @return
      */
-    public FollowerBean getFollowsItem(String follower_handle, String followee_handle) {
-        return getItem(follower_handle, followee_handle);
+    public boolean hasFollower(String follower_handle, String followee_handle) {
+        return getItem(follower_handle, followee_handle) != null;
     }
 
 

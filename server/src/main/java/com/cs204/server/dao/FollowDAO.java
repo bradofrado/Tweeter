@@ -10,8 +10,15 @@ import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 //sk: followeealias
 public interface FollowDAO {
     Integer getFolloweeCount(String follower);
+    Integer getFollowerCount(String follower);
 
     DataPage<String> getPageOfFollowees(String targetUserAlias, int pageSize, String lastUserAlias);
 
     DataPage<String> getPageOfFollowers(String targetUserAlias, int pageSize, String lastUserAlias);
+
+    void setFollower(String follower_name, String follower_handle, String followee_name, String followee_handle);
+
+    void deleteFollower(String follower_handle, String followee_handle);
+
+    boolean hasFollower(String follower_handle, String followee_handle);
 }

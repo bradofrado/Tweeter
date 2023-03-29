@@ -1,5 +1,6 @@
 package com.cs204.server.module;
 
+import com.cs204.server.dao.AuthTokenDAO;
 import com.cs204.server.dao.DataPage;
 import com.cs204.server.dao.FeedDAO;
 import com.cs204.server.dao.FollowDAO;
@@ -12,10 +13,12 @@ import com.google.inject.AbstractModule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
 
@@ -29,6 +32,7 @@ public class TestModule extends AbstractModule {
         bind(UserDAO.class).toInstance(new FakeUserDAO());
         bind(FeedDAO.class).toInstance(new FakeFeedDAO());
         bind(StoryDAO.class).toInstance(new FakeStoryDAO());
+        bind(AuthTokenDAO.class).toInstance(new FakeAuthTokenDAO());
     }
 
     /**
@@ -45,6 +49,11 @@ public class TestModule extends AbstractModule {
         @Override
         public Integer getFolloweeCount(String follower) {
             return getDummyFollowees().size();
+        }
+
+        @Override
+        public Integer getFollowerCount(String follower) {
+            return 20;
         }
 
         @Override
@@ -89,6 +98,21 @@ public class TestModule extends AbstractModule {
             }
 
             return new DataPage<>(responseFollowers, hasMorePages);
+        }
+
+        @Override
+        public void setFollower(String follower_name, String follower_handle, String followee_name, String followee_handle) {
+
+        }
+
+        @Override
+        public void deleteFollower(String follower_handle, String followee_handle) {
+
+        }
+
+        @Override
+        public boolean hasFollower(String follower_handle, String followee_handle) {
+            return new Random().nextInt() > 0;
         }
 
         /**
@@ -219,5 +243,36 @@ public class TestModule extends AbstractModule {
 
     private class FakeStoryDAO implements StoryDAO {
 
+        @Override
+        public DataPage<Status> getPageOfStories(String alias, int pageSize, String lastPosted) {
+            Status status = new Status();
+            status.setUser(new User(lastPosted));
+            Pair<List<Status>, Boolean> pageOfStatus = getFakeData().getPageOfStatus(status, pageSize);
+
+            return new DataPage<>(pageOfStatus.getFirst(), pageOfStatus.getSecond());
+        }
+
+        @Override
+        public void setStory(String post, String user, Integer time, List<String> urls, List<String> mentions) {
+
+        }
+
+        @Override
+        public Status getStory(String alias) {
+            return null;
+        }
+
+        @Override
+        public void deleteStory(String alias) {
+
+        }
+    }
+
+    private class FakeAuthTokenDAO implements AuthTokenDAO {
+
+        @Override
+        public String getUser(AuthToken authToken) {
+            return getFakeData().getFakeUsers().get(0).getAlias();
+        }
     }
 }
