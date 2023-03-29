@@ -48,11 +48,8 @@ public abstract class DynamoDAO<T> {
      */
     public T getItem(String partitionKey, String sortKey) {
         DynamoDbTable<T> table = enhancedClient.table(TableName, TableSchema.fromBean(getType()));
-        Key key = Key.builder()
-                .partitionValue(partitionKey).sortValue(sortKey)
-                .build();
 
-        T item = table.getItem(key);
+        T item = table.getItem(getKey(partitionKey, sortKey));
         return item;
     }
 
@@ -91,9 +88,13 @@ public abstract class DynamoDAO<T> {
     }
 
     protected Key getKey(String partitionKey, String sortKey) {
-        return Key.builder()
-                .partitionValue(partitionKey).sortValue(sortKey)
-                .build();
+        var key = Key.builder()
+                .partitionValue(partitionKey);
+        if (sortKey != null) {
+            key.sortValue(sortKey);
+        }
+
+        return key.build();
     }
 
     protected String getTableName() {

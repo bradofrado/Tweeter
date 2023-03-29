@@ -25,7 +25,7 @@ public abstract class BaseHandler<I, O> implements RequestStreamHandler {
     private Injector injector;
     private Injector getInjector() {
         if (injector == null) {
-            injector = Guice.createInjector(new TestModule());
+            injector = Guice.createInjector(new MainModule());
         }
 
         return injector;
