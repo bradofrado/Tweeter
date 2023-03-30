@@ -14,10 +14,18 @@ public class ImageS3DAO implements ImageDAO {
     private static final String BUCKET_NAME = "braydon-cs340";
     public static final String LINK = "https://braydon-cs340.s3.us-west-2.amazonaws.com/";
 
-    private static AmazonS3 s3 = AmazonS3ClientBuilder
-            .standard()
-            .withRegion("us-west-2")
-            .build();
+    private static AmazonS3 client = null;
+
+    private static AmazonS3 getClient() {
+        if (client == null) {
+            client = AmazonS3ClientBuilder
+                    .standard()
+                    .withRegion("us-west-2")
+                    .build();
+        }
+
+        return client;
+    }
     @Override
     public String uploadImage(String name, String byte64Image) {
         byte[] byteArray = Base64.getDecoder().decode(byte64Image);
@@ -30,7 +38,7 @@ public class ImageS3DAO implements ImageDAO {
 
         PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, name, new ByteArrayInputStream(byteArray), data).withCannedAcl(CannedAccessControlList.PublicRead);
 
-        s3.putObject(request);
+        getClient().putObject(request);
 
         return LINK + name;
     }

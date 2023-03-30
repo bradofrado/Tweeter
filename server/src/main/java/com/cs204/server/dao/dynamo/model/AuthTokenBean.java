@@ -2,20 +2,21 @@ package com.cs204.server.dao.dynamo.model;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
 
 @DynamoDbBean
 public class AuthTokenBean {
-    private String token;
+    private String authToken;
     private String alias;
     private long timeout;
 
     @DynamoDbPartitionKey
-    public String getToken() {
-        return token;
+    public String getAuthToken() {
+        return authToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     public String getAlias() {
@@ -26,6 +27,7 @@ public class AuthTokenBean {
         this.alias = alias;
     }
 
+    //@DynamoDbSortKey
     public long getTimeout() {
         return timeout;
     }

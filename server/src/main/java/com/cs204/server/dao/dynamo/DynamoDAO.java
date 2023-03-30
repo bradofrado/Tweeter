@@ -28,13 +28,21 @@ public abstract class DynamoDAO<T> {
 
     private String TableName;
 
-    private static DynamoDbClient dynamoDbClient = DynamoDbClient.builder()
-            .region(Region.US_WEST_2)
-            .build();
+    private static DynamoDbEnhancedClient client = null;
+    private static DynamoDbEnhancedClient getClient() {
+        if (client == null) {
+            DynamoDbClient dynamoDbClient = DynamoDbClient.builder()
+                    .region(Region.US_WEST_2)
+                    .build();
 
-    private static DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
-            .dynamoDbClient(dynamoDbClient)
-            .build();
+            client = DynamoDbEnhancedClient.builder()
+                    .dynamoDbClient(dynamoDbClient)
+                    .build();
+        }
+
+        return client;
+    }
+
 
     public DynamoDAO(String tableName) {
         TableName = tableName;
@@ -47,7 +55,7 @@ public abstract class DynamoDAO<T> {
      * @return
      */
     public T getItem(String partitionKey, String sortKey) {
-        DynamoDbTable<T> table = enhancedClient.table(TableName, TableSchema.fromBean(getType()));
+        DynamoDbTable<T> table = getClient().table(TableName, TableSchema.fromBean(getType()));
 
         T item = table.getItem(getKey(partitionKey, sortKey));
         return item;
@@ -83,7 +91,7 @@ public abstract class DynamoDAO<T> {
     }
 
     protected DynamoDbTable<T> startTransaction() {
-        DynamoDbTable<T> table = enhancedClient.table(TableName, TableSchema.fromBean(getType()));
+        DynamoDbTable<T> table = getClient().table(TableName, TableSchema.fromBean(getType()));
         return table;
     }
 

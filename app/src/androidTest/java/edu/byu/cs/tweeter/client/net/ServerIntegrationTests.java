@@ -56,7 +56,7 @@ public class ServerIntegrationTests {
                 Assertions.assertEquals(targetUser.getFirstName(), registeredUser.getFirstName());
                 Assertions.assertEquals(targetUser.getLastName(), registeredUser.getLastName());
                 Assertions.assertEquals(targetUser.getAlias(), registeredUser.getAlias());
-                Assertions.assertEquals(targetUser.getImageUrl(), registeredUser.getImageUrl());
+                Assertions.assertEquals("https://braydon-cs340.s3.us-west-2.amazonaws.com/" + targetUser.getAlias(), registeredUser.getImageUrl());
 
                 Assertions.assertNotNull(response.getAuthToken());
                 Assertions.assertNotNull(response.getAuthToken().getToken());

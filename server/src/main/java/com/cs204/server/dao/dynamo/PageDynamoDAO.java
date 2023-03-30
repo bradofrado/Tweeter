@@ -35,10 +35,6 @@ public abstract class PageDynamoDAO<T> extends DynamoDAO<T> {
 
     public DataPage<T> getPageOfItems(String targetUserAlias, int pageSize, String lastUserAlias ) {
         DynamoDbTable<T> table = startTransaction();
-        Key key = Key.builder()
-                .partitionValue(targetUserAlias)
-                .build();
-
         QueryEnhancedRequest.Builder requestBuilder = QueryEnhancedRequest.builder()
                 .queryConditional(QueryConditional.keyEqualTo(getKey(targetUserAlias, null)))
                 .limit(pageSize);

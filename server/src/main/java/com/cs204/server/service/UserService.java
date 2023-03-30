@@ -4,6 +4,7 @@ import com.cs204.server.dao.AuthTokenDAO;
 import com.cs204.server.dao.ImageDAO;
 import com.cs204.server.dao.UserDAO;
 import com.cs204.server.util.HashingUtil;
+import com.google.inject.Inject;
 
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -21,6 +22,7 @@ public class UserService extends AuthenticatedService {
     private static final int AUTH_TOKEN_TIMEOUT = 1000000;
     private ImageDAO imageDAO;
 
+    @Inject
     public UserService(UserDAO userDAO, AuthTokenDAO authTokenDAO, ImageDAO imageDAO) {
         super(authTokenDAO, userDAO);
         this.imageDAO = imageDAO;
@@ -93,6 +95,6 @@ public class UserService extends AuthenticatedService {
 
     private AuthToken createAuthToken(String alias) {
         return authTokenDAO.setAuthToken(new AuthToken(java.util.UUID.randomUUID().toString()), alias,
-                (int) (System.currentTimeMillis() + AUTH_TOKEN_TIMEOUT));
+                (System.currentTimeMillis() + AUTH_TOKEN_TIMEOUT));
     }
 }

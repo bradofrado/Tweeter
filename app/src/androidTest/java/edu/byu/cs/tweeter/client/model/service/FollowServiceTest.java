@@ -32,7 +32,7 @@ public class FollowServiceTest {
      */
     @BeforeEach
     public void setup() {
-        currentUser = new User("FirstName", "LastName", null);
+        currentUser = new User("Allen", "Andersen","@StantheMan", null);
         currentAuthToken = new AuthToken("asb");
         Cache.getInstance().setCurrUserAuthToken(currentAuthToken);
 

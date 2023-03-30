@@ -1,9 +1,11 @@
 package com.cs204.server.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.cs204.server.dao.dynamo.AuthTokenDynamoDAO;
 import com.cs204.server.dao.dynamo.FollowDynamoDAO;
 import com.cs204.server.dao.dynamo.UserDynamoDAO;
 import com.cs204.server.dao.s3.ImageS3DAO;
@@ -24,6 +26,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.util.FakeData;
 
@@ -83,6 +86,29 @@ public class DAOTests {
         public void should_succeed_whenGetUser() {
             assertEquals(user, userDAO.getUser(user.getAlias()));
             assertEquals(user, userDAO.getUser(user.getAlias(), HashingUtil.hash(password)));
+        }
+
+        @Test
+        @DisplayName("Should fail when given invalid login")
+        public void should_fail_whenGivenInvalidLogin() {
+            assertNull(userDAO.getUser("asdfasdf", "asdfasdf"));
+        }
+    }
+
+    @Nested
+    @DisplayName("AuthToken DAO tests")
+    public class AuthTokenTests {
+        private AuthTokenDAO authTokenDAO = new AuthTokenDynamoDAO();
+        AuthToken authToken;
+        @BeforeEach
+        public void setup() {
+            authToken = new AuthToken("asdf");
+            authTokenDAO.setAuthToken(authToken, "@bob", System.currentTimeMillis() + 10000);
+        }
+        @Test
+        @DisplayName("Should return alias when given valid authtoken")
+        public void should_return_aliasWhenGivenValidAuthToken() {
+            assertEquals("@bob", authTokenDAO.getUser(authToken));
         }
     }
 

@@ -19,7 +19,7 @@ public class UserDynamoDAO extends DynamoDAO<UserBean> implements UserDAO {
     @Override
     public User getUser(String username, String password) {
         UserBean userBean = getItem(username, null);
-        if (userBean.getPassword().equals(password)) {
+        if (userBean != null && userBean.getPassword().equals(password)) {
             return userBean.getUser();
         }
 
