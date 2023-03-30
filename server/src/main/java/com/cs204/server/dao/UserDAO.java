@@ -11,4 +11,9 @@ public interface UserDAO {
     User getUser(String username, String password);
     void setUser(String alias, String firstName, String lastName, String imageUrl, String password);
     void deleteUser(String alias);
+    Integer getFolloweeCount(String follower);
+    Integer getFollowerCount(String follower);
+    void setFollowerCount(String follower, int count);
+    void setFolloweeCount(String followee, int count);
+
 }

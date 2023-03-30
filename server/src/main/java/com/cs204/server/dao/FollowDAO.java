@@ -9,9 +9,6 @@ import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
 //pk: followeralias
 //sk: followeealias
 public interface FollowDAO {
-    Integer getFolloweeCount(String follower);
-    Integer getFollowerCount(String follower);
-
     DataPage<String> getPageOfFollowees(String targetUserAlias, int pageSize, String lastUserAlias);
 
     DataPage<String> getPageOfFollowers(String targetUserAlias, int pageSize, String lastUserAlias);

@@ -11,6 +11,8 @@ public class UserBean {
     private String lastName;
     private String imageUrl;
     private String password;
+    private int followers_count;
+    private int followees_count;
 
     @DynamoDbPartitionKey
     public String getAlias() {
@@ -57,5 +59,22 @@ public class UserBean {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    public int getFollowers_count() {
+        return followers_count;
+    }
+
+    public void setFollowers_count(int followers_count) {
+        this.followers_count = followers_count;
+    }
+
+    public int getFollowees_count() {
+        return followees_count;
+    }
+
+    public void setFollowees_count(int followees_count) {
+        this.followees_count = followees_count;
     }
 }

@@ -50,16 +50,6 @@ public class TestModule extends AbstractModule {
 
     private class FakeFollowDAO implements FollowDAO {
         @Override
-        public Integer getFolloweeCount(String follower) {
-            return getDummyFollowees().size();
-        }
-
-        @Override
-        public Integer getFollowerCount(String follower) {
-            return 20;
-        }
-
-        @Override
         public DataPage<String> getPageOfFollowees(String targetUserAlias, int pageSize, String lastUserAlias) {
             List<User> allFollowees = getDummyFollowees();
             List<String> responseFollowees = new ArrayList<>(pageSize);
@@ -218,6 +208,26 @@ public class TestModule extends AbstractModule {
 
         @Override
         public void deleteUser(String alias) {
+
+        }
+
+        @Override
+        public Integer getFolloweeCount(String follower) {
+            return 20;
+        }
+
+        @Override
+        public Integer getFollowerCount(String follower) {
+            return 20;
+        }
+
+        @Override
+        public void setFollowerCount(String follower, int count) {
+
+        }
+
+        @Override
+        public void setFolloweeCount(String followee, int count) {
 
         }
     }

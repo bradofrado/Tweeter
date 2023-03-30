@@ -49,4 +49,48 @@ public class UserDynamoDAO extends DynamoDAO<UserBean> implements UserDAO {
     public void deleteUser(String alias) {
         deleteItem(alias, null);
     }
+
+    @Override
+    public Integer getFolloweeCount(String follower) {
+        UserBean bean = getItem(follower, null);
+
+        return bean.getFollowees_count();
+    }
+
+    @Override
+    public Integer getFollowerCount(String follower) {
+        UserBean bean = getItem(follower, null);
+
+        return bean.getFollowers_count();
+    }
+
+    @Override
+    public void setFollowerCount(String follower, int count) {
+        setItem(follower, null, new ItemSetter<>() {
+            @Override
+            public void setItem(UserBean item) {
+                item.setFollowers_count(count);
+            }
+
+            @Override
+            public UserBean newItem() {
+                return new UserBean();
+            }
+        });
+    }
+
+    @Override
+    public void setFolloweeCount(String followee, int count) {
+        setItem(followee, null, new ItemSetter<>() {
+            @Override
+            public void setItem(UserBean item) {
+                item.setFollowees_count(count);
+            }
+
+            @Override
+            public UserBean newItem() {
+                return new UserBean();
+            }
+        });
+    }
 }
