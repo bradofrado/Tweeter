@@ -67,15 +67,8 @@ public abstract class PageDynamoDAO<T> extends DynamoDAO<T> {
         return result;
     }
 
-    public Integer getFolloweeCount(String follower) {
-        return null;
-    }
-
-    public DataPage<T> getPageOfItemsIndex(String targetUserAlias, int pageSize, String lastUserAlias ) {
+    public DataPage<T> getPageOfItemsIndex(String targetUserAlias, int pageSize, String lastUserAlias) {
         DynamoDbIndex<T> table = startTransaction().index(getTableName());
-//        Key key=Key.builder()
-//                .partitionValue(targetUserAlias)
-//                .build();
 
         QueryEnhancedRequest.Builder requestBuilder=QueryEnhancedRequest.builder()
                 .queryConditional(QueryConditional.keyEqualTo(getKey(targetUserAlias, null)))

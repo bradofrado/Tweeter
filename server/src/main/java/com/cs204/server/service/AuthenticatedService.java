@@ -17,8 +17,10 @@ public abstract class AuthenticatedService {
     protected User getAuthenticatedUser(AuthToken authToken) {
         String alias = authTokenDAO.getUser(authToken);
         if (alias == null) {
+            authTokenDAO.deleteAuthToken(authToken);
             throw new RuntimeException("[Bad Request] Bad or expired auth token");
         }
+
         return userDAO.getUser(alias);
     }
 }

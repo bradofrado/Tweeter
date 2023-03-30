@@ -58,6 +58,7 @@ public class FollowService extends AuthenticatedService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
         DataPage<String> followees = followDAO.getPageOfFollowees(request.getFollowerAlias(), request.getLimit(), request.getLastFolloweeAlias());
         List<User> users = new ArrayList<>();
         for (String followeeAlias : followees.getValues()) {
@@ -77,6 +78,7 @@ public class FollowService extends AuthenticatedService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
         DataPage<String> followers = followDAO.getPageOfFollowers(request.getFollowerAlias(), request.getLimit(), request.getLastFollower());
         List<User> users = new ArrayList<>();
         for (String followerAlias : followers.getValues()) {
@@ -139,6 +141,7 @@ public class FollowService extends AuthenticatedService {
         } else if (request.getFollowerAlias() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a follower alias");
         }
+        getAuthenticatedUser(request.getAuthToken());
         boolean isFollower = followDAO.hasFollower(request.getFollowerAlias(), request.getFolloweeAlias());
 
         return new IsFollowerResponse(isFollower);
@@ -151,6 +154,7 @@ public class FollowService extends AuthenticatedService {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
         int count = followDAO.getFollowerCount(request.getTargetUser());
 
         return new FollowersCountResponse(count);
@@ -163,6 +167,7 @@ public class FollowService extends AuthenticatedService {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
         int count = followDAO.getFolloweeCount(request.getTargetUser());
 
         return new FollowingCountResponse(count);

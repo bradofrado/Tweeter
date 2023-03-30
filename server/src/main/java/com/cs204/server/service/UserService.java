@@ -17,14 +17,12 @@ import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.net.response.UserResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 
-public class UserService {
+public class UserService extends AuthenticatedService {
     private static final int AUTH_TOKEN_TIMEOUT = 1000000;
-    private UserDAO userDAO;
-    private AuthTokenDAO authTokenDAO;
     private ImageDAO imageDAO;
+
     public UserService(UserDAO userDAO, AuthTokenDAO authTokenDAO, ImageDAO imageDAO) {
-        this.userDAO = userDAO;
-        this.authTokenDAO = authTokenDAO;
+        super(authTokenDAO, userDAO);
         this.imageDAO = imageDAO;
     }
 
@@ -68,6 +66,8 @@ public class UserService {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
+
         authTokenDAO.deleteAuthToken(request.getAuthToken());
 
         return new LogoutResponse();
@@ -79,6 +79,8 @@ public class UserService {
         } else if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
+
+        getAuthenticatedUser(request.getAuthToken());
 
         User user = userDAO.getUser(request.getAlias());
 

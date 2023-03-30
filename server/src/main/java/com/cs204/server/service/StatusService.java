@@ -44,6 +44,7 @@ public class StatusService extends AuthenticatedService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
         String lastPosted = request.getLastStatus() != null ? request.getLastStatus().getUser().getAlias() : null;
 
         DataPage<Status> page = feedDAO.getPageOfFeeds(request.getTargetUser(), request.getLimit(), lastPosted);
@@ -63,6 +64,8 @@ public class StatusService extends AuthenticatedService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
+
         String lastPosted = request.getLastStatus() != null ? request.getLastStatus().getUser().getAlias() : null;
 
         DataPage<Status> page = storyDAO.getPageOfStories(request.getTargetUser(), request.getLimit(), lastPosted);
@@ -80,6 +83,8 @@ public class StatusService extends AuthenticatedService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
+
         int currentTime = getCurrentTime();
         Status status = request.getStatus();
         String targetUserAlias = status.getUser().getAlias();
@@ -93,16 +98,6 @@ public class StatusService extends AuthenticatedService {
             lastPoster = followers.getValues().get(followers.getValues().size() - 1);
         }
         return new PostStatusResponse();
-    }
-
-    /**
-     * Returns the {@link FakeData} object used to generate dummy users and auth tokens.
-     * This is written as a separate method to allow mocking of the {@link FakeData}.
-     *
-     * @return a {@link FakeData} instance.
-     */
-    FakeData getFakeData() {
-        return FakeData.getInstance();
     }
 
     private int getCurrentTime() {
