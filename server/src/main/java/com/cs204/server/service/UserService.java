@@ -1,6 +1,7 @@
 package com.cs204.server.service;
 
 import com.cs204.server.dao.AuthTokenDAO;
+import com.cs204.server.dao.ImageDAO;
 import com.cs204.server.dao.UserDAO;
 import com.cs204.server.util.HashingUtil;
 
@@ -20,9 +21,11 @@ public class UserService {
     private static final int AUTH_TOKEN_TIMEOUT = 1000000;
     private UserDAO userDAO;
     private AuthTokenDAO authTokenDAO;
-    public UserService(UserDAO userDAO, AuthTokenDAO authTokenDAO) {
+    private ImageDAO imageDAO;
+    public UserService(UserDAO userDAO, AuthTokenDAO authTokenDAO, ImageDAO imageDAO) {
         this.userDAO = userDAO;
         this.authTokenDAO = authTokenDAO;
+        this.imageDAO = imageDAO;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -52,10 +55,10 @@ public class UserService {
         } else if (request.getImage() == null) {
             throw new RuntimeException("[Bad Request] Missing an image");
         }
-
+        String imageUrl = imageDAO.uploadImage(request.getUsername(), request.getImage());
         userDAO.setUser(request.getUsername(), request.getFirstName(), request.getLastName(),
-                request.getImage(), HashingUtil.hash(request.getPassword()));
-        User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(), request.getImage());
+                imageUrl, HashingUtil.hash(request.getPassword()));
+        User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(), imageUrl);
         AuthToken authToken = createAuthToken(request.getUsername());
         return new RegisterResponse(user, authToken);
     }

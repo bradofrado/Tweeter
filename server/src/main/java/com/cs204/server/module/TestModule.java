@@ -4,8 +4,10 @@ import com.cs204.server.dao.AuthTokenDAO;
 import com.cs204.server.dao.DataPage;
 import com.cs204.server.dao.FeedDAO;
 import com.cs204.server.dao.FollowDAO;
+import com.cs204.server.dao.ImageDAO;
 import com.cs204.server.dao.StoryDAO;
 import com.cs204.server.dao.UserDAO;
+import com.cs204.server.dao.s3.ImageS3DAO;
 import com.cs204.server.service.FollowService;
 import com.cs204.server.service.StatusService;
 import com.cs204.server.service.UserService;
@@ -33,6 +35,7 @@ public class TestModule extends AbstractModule {
         bind(FeedDAO.class).toInstance(new FakeFeedDAO());
         bind(StoryDAO.class).toInstance(new FakeStoryDAO());
         bind(AuthTokenDAO.class).toInstance(new FakeAuthTokenDAO());
+        bind(ImageDAO.class).toInstance(new FakeImageDAO());
     }
 
     /**
@@ -288,6 +291,14 @@ public class TestModule extends AbstractModule {
         @Override
         public void deleteAuthToken(AuthToken authToken) {
 
+        }
+    }
+
+    private class FakeImageDAO implements ImageDAO {
+
+        @Override
+        public String uploadImage(String name, String byte64Image) {
+            return ImageS3DAO.LINK + name;
         }
     }
 }
