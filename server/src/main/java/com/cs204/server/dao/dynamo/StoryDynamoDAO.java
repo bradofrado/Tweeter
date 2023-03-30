@@ -14,7 +14,7 @@ public class StoryDynamoDAO extends PageDynamoDAO<StatusBean> implements StoryDA
     private static final String TableName = "story";
 
     public StoryDynamoDAO() {
-        super(TableName, AliasAttr, DatetimeAttr);
+        super(TableName, AliasAttr, DatetimeAttr, null);
     }
 
     @Override
@@ -25,11 +25,11 @@ public class StoryDynamoDAO extends PageDynamoDAO<StatusBean> implements StoryDA
     }
 
     @Override
-    public void setStory(String post, String user, Integer time, List<String> urls, List<String> mentions) {
+    public void setStory(String post, String user, Long time, List<String> urls, List<String> mentions) {
         setItem(user, time.toString(), new ItemSetter<StatusBean>() {
             @Override
             public void setItem(StatusBean item) {
-                item.setDatetime(time);
+                item.setTime(time.toString());
                 item.setAlias(user);
                 item.setMentions(mentions);
                 item.setPost(post);

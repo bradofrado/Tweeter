@@ -85,7 +85,7 @@ public class StatusService extends AuthenticatedService {
 
         getAuthenticatedUser(request.getAuthToken());
 
-        int currentTime = getCurrentTime();
+        long currentTime = getCurrentTime();
         Status status = request.getStatus();
         String targetUserAlias = status.getUser().getAlias();
         storyDAO.setStory(status.getPost(), targetUserAlias, currentTime, status.getUrls(), status.getMentions());
@@ -100,7 +100,7 @@ public class StatusService extends AuthenticatedService {
         return new PostStatusResponse();
     }
 
-    private int getCurrentTime() {
-        return (int)System.currentTimeMillis();
+    private long getCurrentTime() {
+        return System.currentTimeMillis();
     }
 }

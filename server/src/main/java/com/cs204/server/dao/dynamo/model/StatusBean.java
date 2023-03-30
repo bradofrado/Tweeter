@@ -12,12 +12,12 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 public class StatusBean {
     private String post;
     private String alias;
-    private int datetime;
+    private String time;
     private List<String> urls;
     private List<String> mentions;
 
     public Status getStatus() {
-        return new Status(getPost(), new User(getAlias()), new java.util.Date((long)getDatetime()).toString(), getUrls(), getMentions());
+        return new Status(getPost(), new User(getAlias()), getTime(), getUrls(), getMentions());
     }
 
     public String getPost() {
@@ -38,12 +38,12 @@ public class StatusBean {
     }
 
     @DynamoDbSortKey
-    public int getDatetime() {
-        return datetime;
+    public String getTime() {
+        return time;
     }
 
-    public void setDatetime(int datetime) {
-        this.datetime = datetime;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public List<String> getUrls() {

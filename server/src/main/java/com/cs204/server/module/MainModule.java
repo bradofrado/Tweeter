@@ -15,7 +15,16 @@ import com.cs204.server.dao.s3.ImageS3DAO;
 import com.cs204.server.service.FollowService;
 import com.cs204.server.service.StatusService;
 import com.cs204.server.service.UserService;
+import com.cs204.server.util.HashingUtil;
 import com.google.inject.AbstractModule;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import edu.byu.cs.tweeter.model.domain.Status;
+import edu.byu.cs.tweeter.model.domain.User;
+import edu.byu.cs.tweeter.util.FakeData;
 
 public class MainModule extends AbstractModule {
     @Override
@@ -29,5 +38,36 @@ public class MainModule extends AbstractModule {
         bind(FeedDAO.class).to(FeedDynamoDAO.class);
         bind(StoryDAO.class).to(StoryDynamoDAO.class);
         bind(ImageDAO.class).to(ImageS3DAO.class);
+    }
+
+    public static void main(String[] args) {
+        FollowDAO followDAO = new FollowDynamoDAO();
+        StoryDAO storyDAO = new StoryDynamoDAO();
+        UserDAO userDAO = new UserDynamoDAO();
+        FeedDAO feedDAO = new FeedDynamoDAO();
+//        List<User> users = getFakeData().getFakeUsers();
+//        for (User user : users) {
+//            for (User user1: users) {
+//                if (user != user1)
+//                    followDAO.setFollower(user.getName(), user.getAlias(), user1.getName(), user1.getAlias());
+//            }
+//            userDAO.setUser(user.getAlias(), user.getFirstName(), user.getLastName(), user.getImageUrl(), HashingUtil.hash("Random"));
+//            userDAO.setFolloweeCount(user.getAlias(), 20);
+//            userDAO.setFollowerCount(user.getAlias(), 20);
+//        }
+
+        try {
+            List<Status> statuses = getFakeData().getFakeStatuses();
+            for (Status user : statuses) {
+                feedDAO.setFeed(user.getPost(), user.getUser().getAlias(), System.currentTimeMillis(), user.getUrls(), user.getMentions());
+                storyDAO.setStory(user.getPost(), user.getUser().getAlias(), System.currentTimeMillis(), user.getUrls(), user.getMentions());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    static FakeData getFakeData() {
+        return FakeData.getInstance();
     }
 }

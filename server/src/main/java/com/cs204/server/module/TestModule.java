@@ -244,7 +244,7 @@ public class TestModule extends AbstractModule {
         }
 
         @Override
-        public void setFeed(String post, String user, Integer time, List<String> urls, List<String> mentions) {
+        public void setFeed(String post, String user, Long time, List<String> urls, List<String> mentions) {
 
         }
 
@@ -271,7 +271,7 @@ public class TestModule extends AbstractModule {
         }
 
         @Override
-        public void setStory(String post, String user, Integer time, List<String> urls, List<String> mentions) {
+        public void setStory(String post, String user, Long time, List<String> urls, List<String> mentions) {
 
         }
 

@@ -6,7 +6,7 @@ import com.cs204.server.dao.dynamo.model.FollowerBean;
 
 public class FollowDynamoDAO extends PageDynamoDAO<FollowerBean> implements FollowDAO {
     public FollowDynamoDAO() {
-        super(TableName, FollowerAttr, FolloweeAttr);
+        super(TableName, FollowerAttr, FolloweeAttr, IndexName);
     }
     private static final String TableName = "follows";
     public static final String IndexName = "follows_index";
@@ -63,11 +63,11 @@ public class FollowDynamoDAO extends PageDynamoDAO<FollowerBean> implements Foll
 
     @Override
     public DataPage<String> getPageOfFollowees(String targetUserAlias, int pageSize, String lastUserAlias) {
-        return convertDataPage(getPageOfItemsIndex(targetUserAlias, pageSize, lastUserAlias), p -> p.getFollowee_handle());
+        return convertDataPage(getPageOfItemsIndex(targetUserAlias, pageSize, lastUserAlias), p -> p.getFollower_handle());
     }
 
     @Override
     public DataPage<String> getPageOfFollowers(String targetUserAlias, int pageSize, String lastUserAlias) {
-        return convertDataPage(getPageOfItems(targetUserAlias, pageSize, lastUserAlias), p -> p.getFollower_handle());
+        return convertDataPage(getPageOfItems(targetUserAlias, pageSize, lastUserAlias), p -> p.getFollowee_handle());
     }
 }

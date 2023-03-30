@@ -5,7 +5,6 @@ import com.cs204.server.dao.FeedDAO;
 import com.cs204.server.dao.dynamo.model.StatusBean;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import edu.byu.cs.tweeter.model.domain.Status;
 
@@ -15,7 +14,7 @@ public class FeedDynamoDAO extends PageDynamoDAO<StatusBean> implements FeedDAO 
     private static final String TableName = "feed";
 
     public FeedDynamoDAO() {
-        super(TableName, AliasAttr, DatetimeAttr);
+        super(TableName, AliasAttr, DatetimeAttr, null);
     }
 
     @Override
@@ -26,11 +25,11 @@ public class FeedDynamoDAO extends PageDynamoDAO<StatusBean> implements FeedDAO 
     }
 
     @Override
-    public void setFeed(String post, String user, Integer datetime, List<String> urls, List<String> mentions) {
+    public void setFeed(String post, String user, Long datetime, List<String> urls, List<String> mentions) {
         setItem(user, datetime.toString(), new ItemSetter<StatusBean>() {
             @Override
             public void setItem(StatusBean item) {
-                item.setDatetime(datetime);
+                item.setTime(datetime.toString());
                 item.setAlias(user);
                 item.setMentions(mentions);
                 item.setPost(post);

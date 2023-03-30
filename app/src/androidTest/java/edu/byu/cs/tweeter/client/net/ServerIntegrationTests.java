@@ -27,7 +27,7 @@ public class ServerIntegrationTests {
     @BeforeEach
     public void setup() {
         serverFacade = new ServerFacade();
-        targetUser = new User("Braydon", "Jones", "bradofrado", "URL");
+        targetUser = new User("Allen", "Anderson", "@allen", "URL");
     }
 
     @Nested

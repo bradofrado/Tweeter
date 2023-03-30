@@ -1,7 +1,6 @@
 package com.cs204.server.dao.dynamo;
 
 import com.cs204.server.dao.DataPage;
-import com.cs204.server.dao.dynamo.model.FollowerBean;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +10,6 @@ import java.util.stream.Collectors;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbIndex;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
@@ -21,11 +18,13 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 public abstract class PageDynamoDAO<T> extends DynamoDAO<T> {
     private String partitionKey;
+    private String sortKey;
     private String indexKey;
 
-    public PageDynamoDAO(String tableName, String partitionKey, String indexKey) {
+    public PageDynamoDAO(String tableName, String partitionKey, String sortKey, String indexKey) {
         super(tableName);
         this.partitionKey = partitionKey;
+        this.sortKey = sortKey;
         this.indexKey = indexKey;
     }
 
@@ -43,7 +42,7 @@ public abstract class PageDynamoDAO<T> extends DynamoDAO<T> {
             // Build up the Exclusive Start Key (telling DynamoDB where you left off reading items)
             Map<String, AttributeValue> startKey = new HashMap<>();
             startKey.put(partitionKey, AttributeValue.builder().s(targetUserAlias).build());
-            startKey.put(indexKey, AttributeValue.builder().s(lastUserAlias).build());
+            startKey.put(sortKey, AttributeValue.builder().s(lastUserAlias).build());
 
             requestBuilder.exclusiveStartKey(startKey);
         }
@@ -64,7 +63,7 @@ public abstract class PageDynamoDAO<T> extends DynamoDAO<T> {
     }
 
     public DataPage<T> getPageOfItemsIndex(String targetUserAlias, int pageSize, String lastUserAlias) {
-        DynamoDbIndex<T> table = startTransaction().index(getTableName());
+        DynamoDbIndex<T> table = startTransaction().index(indexKey);
 
         QueryEnhancedRequest.Builder requestBuilder=QueryEnhancedRequest.builder()
                 .queryConditional(QueryConditional.keyEqualTo(getKey(targetUserAlias, null)))
@@ -72,7 +71,7 @@ public abstract class PageDynamoDAO<T> extends DynamoDAO<T> {
 
         if (isNonEmptyString(lastUserAlias)) {
             Map<String, AttributeValue> startKey=new HashMap<>();
-            startKey.put(indexKey, AttributeValue.builder().s(targetUserAlias).build());
+            startKey.put(sortKey, AttributeValue.builder().s(targetUserAlias).build());
             startKey.put(partitionKey, AttributeValue.builder().s(lastUserAlias).build());
 
             requestBuilder.exclusiveStartKey(startKey);
