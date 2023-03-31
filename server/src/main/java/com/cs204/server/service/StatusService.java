@@ -94,7 +94,7 @@ public class StatusService extends AuthenticatedService {
         while (hasMorePages) {
             DataPage<String> followers = followDAO.getPageOfFollowers(targetUserAlias, 10, lastPoster);
             hasMorePages = followers.isHasMorePages();
-            followers.getValues().forEach(f -> feedDAO.setFeed(status.getPost(), f, currentTime, status.getUrls(), status.getMentions()));
+            followers.getValues().forEach(f -> feedDAO.setFeed(targetUserAlias, status.getPost(), f, currentTime, status.getUrls(), status.getMentions()));
             lastPoster = followers.getValues().get(followers.getValues().size() - 1);
         }
         return new PostStatusResponse();

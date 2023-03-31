@@ -117,8 +117,6 @@ public class FakeData {
         allStatuses.clear();
 
         Calendar calendar = getCalendar();
-        SimpleDateFormat sdf = new SimpleDateFormat("E MMM d HH:mm:ss z Y");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         List<User> fakeUsers = getFakeUsers();
 
         for (int i = 0; i < 2; ++i) {
@@ -132,7 +130,7 @@ public class FakeData {
                         "\nMy friend " + mention.getAlias() + " likes this website" +
                         "\n" + url;
                 calendar.add(Calendar.MINUTE, 1);
-                String datetime = sdf.format(calendar.getTime());
+                String datetime = Timestamp.getDateFormat().format(calendar.getTime());
                 Status status = new Status(post, sender, datetime, urls, mentions);
                 allStatuses.add(status);
             }

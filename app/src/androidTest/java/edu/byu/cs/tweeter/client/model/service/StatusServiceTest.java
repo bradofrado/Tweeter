@@ -132,7 +132,7 @@ public class StatusServiceTest {
         statusServiceSpy.getStatuses(currentUser, 3, null, observer);
         awaitCountDownLatch();
 
-        List<Status> expectedStatuses = FakeData.getInstance().getFakeStatuses().subList(0, 3);
+        List<Status> expectedStatuses = FakeData.getInstance().getFakeStatuses().subList(1, 4);
         Mockito.verify(observer).handleSuccess(expectedStatuses, true);
 
         Assertions.assertTrue(observer.isSuccess());

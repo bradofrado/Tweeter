@@ -45,7 +45,7 @@ public class MainModule extends AbstractModule {
         StoryDAO storyDAO = new StoryDynamoDAO();
         UserDAO userDAO = new UserDynamoDAO();
         FeedDAO feedDAO = new FeedDynamoDAO();
-//        List<User> users = getFakeData().getFakeUsers();
+        List<User> users = getFakeData().getFakeUsers();
 //        for (User user : users) {
 //            for (User user1: users) {
 //                if (user != user1)
@@ -58,9 +58,12 @@ public class MainModule extends AbstractModule {
 
         try {
             List<Status> statuses = getFakeData().getFakeStatuses();
-            for (Status user : statuses) {
-                feedDAO.setFeed(user.getPost(), user.getUser().getAlias(), System.currentTimeMillis(), user.getUrls(), user.getMentions());
-                storyDAO.setStory(user.getPost(), user.getUser().getAlias(), System.currentTimeMillis(), user.getUrls(), user.getMentions());
+            for (Status status : statuses) {
+                for (User user : users) {
+                    if (user.getAlias().equals(status.getUser().getAlias())) continue;
+                    feedDAO.setFeed(user.getAlias(), status.getPost(), status.getUser().getAlias(), System.currentTimeMillis(), status.getUrls(), status.getMentions());
+                }
+                //storyDAO.setStory(status.getPost(), status.getUser().getAlias(), System.currentTimeMillis(), status.getUrls(), status.getMentions());
             }
         } catch (Exception ex) {
             ex.printStackTrace();

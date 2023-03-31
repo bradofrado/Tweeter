@@ -32,7 +32,7 @@ public abstract class PageDynamoDAO<T> extends DynamoDAO<T> {
         return (value != null && value.length() > 0);
     }
 
-    public DataPage<T> getPageOfItems(String targetUserAlias, int pageSize, String lastUserAlias ) {
+    public DataPage<T> getPageOfItems(String targetUserAlias, int pageSize, String lastUserAlias) {
         DynamoDbTable<T> table = startTransaction();
         QueryEnhancedRequest.Builder requestBuilder = QueryEnhancedRequest.builder()
                 .queryConditional(QueryConditional.keyEqualTo(getKey(targetUserAlias, null)))
