@@ -34,8 +34,9 @@ public class LoginTask extends AuthenicationTask {
     }
 
     @Override
-    protected Pair<User, AuthToken> doAuthentication() throws IOException, TweeterRemoteException {
+    protected Pair<User, AuthToken> doAuthentication() throws IOException, TweeterRemoteException, TaskFailedException {
         LoginResponse response = getServerFacade().login(new LoginRequest(username, password));
+        validateResponse(response);
 
         return new Pair<>(response.getUser(), response.getAuthToken());
     }

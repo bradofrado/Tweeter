@@ -32,7 +32,7 @@ public class GetUserTask extends AuthenticatedTask {
     }
 
    @Override
-    protected void processTask() throws IOException, TweeterRemoteException {
+    protected void processTask() throws IOException, TweeterRemoteException, TaskFailedException {
         user = getUser();
     }
 
@@ -41,8 +41,10 @@ public class GetUserTask extends AuthenticatedTask {
         msgBundle.putSerializable(USER_KEY, user);
     }
 
-    private User getUser()  throws IOException, TweeterRemoteException {
+    private User getUser() throws IOException, TweeterRemoteException, TaskFailedException {
         UserResponse response = getServerFacade().getUser(new UserRequest(authToken, alias));
+        validateResponse(response);
+
         return response.getUser();
     }
 }

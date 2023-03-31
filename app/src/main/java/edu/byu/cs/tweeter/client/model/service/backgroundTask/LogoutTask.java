@@ -23,8 +23,9 @@ public class LogoutTask extends AuthenticatedTask {
     }
 
     @Override
-    protected void processTask() throws IOException, TweeterRemoteException {
+    protected void processTask() throws IOException, TweeterRemoteException, TaskFailedException {
         LogoutResponse response = getServerFacade().logout(new LogoutRequest(authToken));
+        validateResponse(response);
     }
 
     @Override

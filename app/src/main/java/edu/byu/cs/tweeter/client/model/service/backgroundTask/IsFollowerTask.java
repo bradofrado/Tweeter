@@ -37,8 +37,9 @@ public class IsFollowerTask extends AuthenticatedTask {
     }
 
     @Override
-    protected void processTask() throws IOException, TweeterRemoteException {
+    protected void processTask() throws IOException, TweeterRemoteException, TaskFailedException {
         IsFollowerResponse response = getServerFacade().isFollower(new IsFollowerRequest(authToken, follower.getAlias(), followee.getAlias()));
+        validateResponse(response);
 
         isFollower = response.getIsFollower();
     }
