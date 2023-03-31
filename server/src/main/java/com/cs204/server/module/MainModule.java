@@ -61,7 +61,10 @@ public class MainModule extends AbstractModule {
             for (Status status : statuses) {
                 for (User user : users) {
                     if (user.getAlias().equals(status.getUser().getAlias())) continue;
-                    feedDAO.setFeed(user.getAlias(), status.getPost(), status.getUser().getAlias(), System.currentTimeMillis(), status.getUrls(), status.getMentions());
+                    long time = System.currentTimeMillis();
+                    time /= 1000;
+                    time *= 1000;
+                    feedDAO.setFeed(user.getAlias(), status.getPost(), status.getUser().getAlias(), time, status.getUrls(), status.getMentions());
                 }
                 //storyDAO.setStory(status.getPost(), status.getUser().getAlias(), System.currentTimeMillis(), status.getUrls(), status.getMentions());
             }

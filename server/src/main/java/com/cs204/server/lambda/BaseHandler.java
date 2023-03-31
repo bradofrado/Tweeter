@@ -57,19 +57,6 @@ public abstract class BaseHandler<I, O> implements RequestStreamHandler {
     protected <T> T getInstance(Class<T> type) {
         Injector injector = getInjector();
         return injector.getInstance(type);
-//        if (type == UserService.class) {
-//            return (T) new UserService(new UserDynamoDAO(), new AuthTokenDynamoDAO(), new ImageS3DAO());
-//        }
-//
-//        if (type == FollowService.class) {
-//            return (T) new FollowService(new FollowDynamoDAO(), new UserDynamoDAO(), new AuthTokenDynamoDAO());
-//        }
-//
-//        if (type == StatusService.class) {
-//            return (T) new StatusService(new FeedDynamoDAO(), new StoryDynamoDAO(), new FollowDynamoDAO(), new UserDynamoDAO(), new AuthTokenDynamoDAO());
-//        }
-//
-//        return null;
     }
 
     @Override

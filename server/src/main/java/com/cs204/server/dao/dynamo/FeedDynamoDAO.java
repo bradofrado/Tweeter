@@ -10,7 +10,7 @@ import edu.byu.cs.tweeter.model.domain.Status;
 
 public class FeedDynamoDAO extends PageDynamoDAO<FeedBean> implements FeedDAO {
     private static final String AliasAttr = "alias";
-    private static final String DatetimeAttr = "datetime";
+    private static final String DatetimeAttr = "time";
     private static final String TableName = "feed";
 
     public FeedDynamoDAO() {
@@ -18,8 +18,9 @@ public class FeedDynamoDAO extends PageDynamoDAO<FeedBean> implements FeedDAO {
     }
 
     @Override
-    public DataPage<Status> getPageOfFeeds(String alias, int pageSize, String lastPosted) {
-        DataPage<FeedBean> page = getPageOfItems(alias, pageSize, lastPosted);
+    public DataPage<Status> getPageOfFeeds(String alias, int pageSize, Long time) {
+        String timeStr = time != null ? time.toString() : null;
+        DataPage<FeedBean> page = getPageOfItems(alias, pageSize, timeStr);
 
         return convertDataPage(page, p -> p.getStatus());
     }

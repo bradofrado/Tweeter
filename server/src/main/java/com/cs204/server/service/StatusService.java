@@ -7,6 +7,7 @@ import com.cs204.server.dao.FollowDAO;
 import com.cs204.server.dao.StoryDAO;
 import com.cs204.server.dao.UserDAO;
 
+import java.text.ParseException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
+import edu.byu.cs.tweeter.util.Timestamp;
 
 public class StatusService extends AuthenticatedService {
     private FeedDAO feedDAO;
@@ -45,9 +47,11 @@ public class StatusService extends AuthenticatedService {
         }
 
         getAuthenticatedUser(request.getAuthToken());
-        String lastPosted = request.getLastStatus() != null ? request.getLastStatus().getUser().getAlias() : null;
+        String date = request.getLastStatus() != null ? request.getLastStatus().getDatetime() : null;
 
-        DataPage<Status> page = feedDAO.getPageOfFeeds(request.getTargetUser(), request.getLimit(), lastPosted);
+        Long time = null;
+        time = Timestamp.getMillis(date);
+        DataPage<Status> page = feedDAO.getPageOfFeeds(request.getTargetUser(), request.getLimit(), time);
         page.getValues().forEach(p -> {
             User user = userDAO.getUser(p.getUser().getAlias());
             p.setUser(user);
@@ -66,9 +70,12 @@ public class StatusService extends AuthenticatedService {
 
         getAuthenticatedUser(request.getAuthToken());
 
-        String lastPosted = request.getLastStatus() != null ? request.getLastStatus().getUser().getAlias() : null;
+        String date = request.getLastStatus() != null ? request.getLastStatus().getDatetime() : null;
 
-        DataPage<Status> page = storyDAO.getPageOfStories(request.getTargetUser(), request.getLimit(), lastPosted);
+        Long time = null;
+        time = Timestamp.getMillis(date);
+
+        DataPage<Status> page = storyDAO.getPageOfStories(request.getTargetUser(), request.getLimit(), time);
         page.getValues().forEach(p -> {
             User user = userDAO.getUser(p.getUser().getAlias());
             p.setUser(user);

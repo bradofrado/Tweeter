@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -11,6 +12,14 @@ public class Timestamp {
     }
 
     public static SimpleDateFormat getDateFormat() {
-        return new SimpleDateFormat(DATE_FORMAT, Locale.US);
+        return new SimpleDateFormat(DATE_FORMAT);
+    }
+
+    public static Long getMillis(String date) {
+        try {
+            return getDateFormat().parse(date).getTime();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }

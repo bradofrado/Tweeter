@@ -12,6 +12,7 @@ import com.cs204.server.dao.s3.ImageS3DAO;
 import com.cs204.server.util.HashingUtil;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,12 +30,13 @@ import javax.imageio.ImageIO;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.util.FakeData;
+import edu.byu.cs.tweeter.util.Timestamp;
 
 @DisplayName("Dynamo DAO tests")
 public class DAOTests {
     @Nested
-    @DisplayName("Feed Dynamo DAO tests")
-    public class FeedDAOTests {
+    @DisplayName("Follow Dynamo DAO tests")
+    public class FollowDAOTests {
         private FollowDAO followDAO;
         List<User> users;
         private FakeData fakeData = FakeData.getInstance();
@@ -57,8 +59,12 @@ public class DAOTests {
         @Test
         @DisplayName("Should return page of followers")
         public void should_return_pageOfFollowers() {
-            DataPage<String> page = followDAO.getPageOfFollowers("@StantheMan", 10, null);
-            assertTrue(page.isHasMorePages());
+            try {
+                DataPage<String> page = followDAO.getPageOfFollowers("@allen", 10, null);
+                assertTrue(page.isHasMorePages());
+            } catch (Exception ex) {
+                Assertions.fail(ex.getMessage());
+            }
         }
     }
 

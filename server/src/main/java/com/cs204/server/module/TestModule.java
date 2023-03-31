@@ -235,9 +235,9 @@ public class TestModule extends AbstractModule {
     private class FakeFeedDAO implements FeedDAO {
 
         @Override
-        public DataPage<Status> getPageOfFeeds(String alias, int pageSize, String lastPosted) {
+        public DataPage<Status> getPageOfFeeds(String alias, int pageSize, Long lastPosted) {
             Status status = new Status();
-            status.setUser(new User(lastPosted));
+            //status.setUser(new User(lastPosted));
             Pair<List<Status>, Boolean> pageOfStatus = getFakeData().getPageOfStatus(status, pageSize);
 
             return new DataPage<>(pageOfStatus.getFirst(), pageOfStatus.getSecond());
@@ -262,9 +262,9 @@ public class TestModule extends AbstractModule {
     private class FakeStoryDAO implements StoryDAO {
 
         @Override
-        public DataPage<Status> getPageOfStories(String alias, int pageSize, String lastPosted) {
+        public DataPage<Status> getPageOfStories(String alias, int pageSize, Long lastPosted) {
             Status status = new Status();
-            status.setUser(new User(lastPosted));
+            //status.setUser(new User(lastPosted));
             Pair<List<Status>, Boolean> pageOfStatus = getFakeData().getPageOfStatus(status, pageSize);
 
             return new DataPage<>(pageOfStatus.getFirst(), pageOfStatus.getSecond());

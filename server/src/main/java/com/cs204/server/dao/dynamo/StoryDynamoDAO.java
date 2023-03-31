@@ -10,7 +10,7 @@ import edu.byu.cs.tweeter.model.domain.Status;
 
 public class StoryDynamoDAO extends PageDynamoDAO<StoryBean> implements StoryDAO {
     private static final String AliasAttr = "alias";
-    private static final String DatetimeAttr = "datetime";
+    private static final String DatetimeAttr = "time";
     private static final String TableName = "story";
 
     public StoryDynamoDAO() {
@@ -18,8 +18,9 @@ public class StoryDynamoDAO extends PageDynamoDAO<StoryBean> implements StoryDAO
     }
 
     @Override
-    public DataPage<Status> getPageOfStories(String alias, int pageSize, String lastPosted) {
-        DataPage<StoryBean> page = getPageOfItems(alias, pageSize, lastPosted);
+    public DataPage<Status> getPageOfStories(String alias, int pageSize, Long time) {
+        String timeStr = time != null ? time.toString() : null;
+        DataPage<StoryBean> page = getPageOfItems(alias, pageSize, timeStr);
 
         return convertDataPage(page, p -> p.getStatus());
     }
