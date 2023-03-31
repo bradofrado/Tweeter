@@ -19,7 +19,7 @@ import edu.byu.cs.tweeter.model.net.response.UserResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 
 public class UserService extends AuthenticatedService {
-    private static final int AUTH_TOKEN_TIMEOUT = 1000000;
+    private static final int AUTH_TOKEN_TIMEOUT = 86400000;
     private ImageDAO imageDAO;
 
     @Inject
@@ -67,8 +67,6 @@ public class UserService extends AuthenticatedService {
         if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
-
-        getAuthenticatedUser(request.getAuthToken());
 
         authTokenDAO.deleteAuthToken(request.getAuthToken());
 

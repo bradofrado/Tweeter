@@ -106,7 +106,7 @@ public class FollowService extends AuthenticatedService {
         if (follower == null) {
             throw new RuntimeException("[Bad Request] Invalid follower alias " + request.getFolloweeAlias());
         }
-        followDAO.setFollower(user.getName(), user.getAlias(), follower.getName(), follower.getAlias());
+        followDAO.setFollower(follower.getName(), follower.getAlias(), user.getName(), user.getAlias());
         userDAO.setFolloweeCount(user.getAlias(), userDAO.getFolloweeCount(user.getAlias()) + 1);
         userDAO.setFollowerCount(follower.getAlias(), userDAO.getFollowerCount(follower.getAlias()) + 1);
 
@@ -125,7 +125,7 @@ public class FollowService extends AuthenticatedService {
         if (follower == null) {
             throw new RuntimeException("[Bad Request] Invalid followee alias " + request.getFolloweeAlias());
         }
-        followDAO.deleteFollower(user.getAlias(), follower.getAlias());
+        followDAO.deleteFollower(follower.getAlias(), user.getAlias());
         userDAO.setFolloweeCount(user.getAlias(), userDAO.getFolloweeCount(user.getAlias()) - 1);
         userDAO.setFollowerCount(follower.getAlias(), userDAO.getFollowerCount(follower.getAlias()) - 1);
 
@@ -146,7 +146,7 @@ public class FollowService extends AuthenticatedService {
             throw new RuntimeException("[Bad Request] Request needs to have a follower alias");
         }
         getAuthenticatedUser(request.getAuthToken());
-        boolean isFollower = followDAO.hasFollower(request.getFollowerAlias(), request.getFolloweeAlias());
+        boolean isFollower = followDAO.hasFollower(request.getFolloweeAlias(), request.getFollowerAlias());
 
         return new IsFollowerResponse(isFollower);
     }
