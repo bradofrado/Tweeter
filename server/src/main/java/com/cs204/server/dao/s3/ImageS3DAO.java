@@ -11,8 +11,8 @@ import java.io.ByteArrayInputStream;
 import java.util.Base64;
 
 public class ImageS3DAO implements ImageDAO {
-    private static final String BUCKET_NAME = "braydon-cs340";
-    public static final String LINK = "https://braydon-cs340.s3.us-west-2.amazonaws.com/";
+    private static final String BUCKET_NAME = "braydon-cs-340";
+    public static final String LINK = "https://braydon-cs-340.s3.us-west-2.amazonaws.com/";
 
     private static AmazonS3 client = null;
 
