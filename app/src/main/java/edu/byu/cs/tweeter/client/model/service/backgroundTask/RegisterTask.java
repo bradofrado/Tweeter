@@ -50,8 +50,9 @@ public class RegisterTask extends AuthenicationTask {
 
 
     @Override
-    protected Pair<User, AuthToken> doAuthentication() throws IOException, TweeterRemoteException {
+    protected Pair<User, AuthToken> doAuthentication() throws IOException, TweeterRemoteException, TaskFailedException {
         RegisterResponse response = getServerFacade().register(new RegisterRequest(firstName, lastName, username, password, image));
+        validateResponse(response);
 
         return new Pair<>(response.getRegisteredUser(), response.getAuthToken());
     }

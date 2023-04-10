@@ -1,5 +1,11 @@
 package com.cs204.server.service;
 
+import com.cs204.server.dao.AuthTokenDAO;
+import com.cs204.server.dao.ImageDAO;
+import com.cs204.server.dao.UserDAO;
+import com.cs204.server.util.HashingUtil;
+import com.google.inject.Inject;
+
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.LoginRequest;
@@ -12,7 +18,15 @@ import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 import edu.byu.cs.tweeter.model.net.response.UserResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 
-public class UserService {
+public class UserService extends AuthenticatedService {
+    private static final int AUTH_TOKEN_TIMEOUT = 86400000;
+    private ImageDAO imageDAO;
+
+    @Inject
+    public UserService(UserDAO userDAO, AuthTokenDAO authTokenDAO, ImageDAO imageDAO) {
+        super(authTokenDAO, userDAO);
+        this.imageDAO = imageDAO;
+    }
 
     public LoginResponse login(LoginRequest request) {
         if(request.getUsername() == null){
@@ -21,9 +35,11 @@ public class UserService {
             throw new RuntimeException("[Bad Request] Missing a password");
         }
 
-        // TODO: Generates dummy data. Replace with a real implementation.
-        User user = getDummyUser();
-        AuthToken authToken = getDummyAuthToken();
+        User user = userDAO.getUser(request.getUsername(), HashingUtil.hash(request.getPassword()));
+        if (user == null) {
+            return new LoginResponse("Invalid Username or password");
+        }
+        AuthToken authToken = createAuthToken(user.getAlias());
         return new LoginResponse(user, authToken);
     }
 
@@ -39,9 +55,11 @@ public class UserService {
         } else if (request.getImage() == null) {
             throw new RuntimeException("[Bad Request] Missing an image");
         }
-
-        User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(), request.getImage());
-        AuthToken authToken = getDummyAuthToken();
+        String imageUrl = imageDAO.uploadImage(request.getUsername(), request.getImage());
+        userDAO.setUser(request.getUsername(), request.getFirstName(), request.getLastName(),
+                imageUrl, HashingUtil.hash(request.getPassword()));
+        User user = new User(request.getFirstName(), request.getLastName(), request.getUsername(), imageUrl);
+        AuthToken authToken = createAuthToken(request.getUsername());
         return new RegisterResponse(user, authToken);
     }
 
@@ -49,6 +67,8 @@ public class UserService {
         if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
+
+        authTokenDAO.deleteAuthToken(request.getAuthToken());
 
         return new LogoutResponse();
     }
@@ -60,7 +80,9 @@ public class UserService {
             throw new RuntimeException("[Bad Request] Missing an authtoken");
         }
 
-        User user = getFakeData().findUserByAlias(request.getAlias());
+        getAuthenticatedUser(request.getAuthToken());
+
+        User user = userDAO.getUser(request.getAlias());
 
         if (user == null) {
             return new UserResponse("Could not find user " + request.getAlias());
@@ -69,33 +91,8 @@ public class UserService {
         return new UserResponse(user);
     }
 
-    /**
-     * Returns the dummy user to be returned by the login operation.
-     * This is written as a separate method to allow mocking of the dummy user.
-     *
-     * @return a dummy user.
-     */
-    User getDummyUser() {
-        return getFakeData().getFirstUser();
-    }
-
-    /**
-     * Returns the dummy auth token to be returned by the login operation.
-     * This is written as a separate method to allow mocking of the dummy auth token.
-     *
-     * @return a dummy auth token.
-     */
-    AuthToken getDummyAuthToken() {
-        return getFakeData().getAuthToken();
-    }
-
-    /**
-     * Returns the {@link FakeData} object used to generate dummy users and auth tokens.
-     * This is written as a separate method to allow mocking of the {@link FakeData}.
-     *
-     * @return a {@link FakeData} instance.
-     */
-    FakeData getFakeData() {
-        return FakeData.getInstance();
+    private AuthToken createAuthToken(String alias) {
+        return authTokenDAO.setAuthToken(new AuthToken(java.util.UUID.randomUUID().toString()), alias,
+                (System.currentTimeMillis() + AUTH_TOKEN_TIMEOUT));
     }
 }

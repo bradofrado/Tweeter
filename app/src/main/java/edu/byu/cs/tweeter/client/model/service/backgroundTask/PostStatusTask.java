@@ -29,8 +29,9 @@ public class PostStatusTask extends AuthenticatedTask {
     }
 
     @Override
-    protected void processTask() throws IOException, TweeterRemoteException {
+    protected void processTask() throws IOException, TweeterRemoteException, TaskFailedException {
         PostStatusResponse response = getServerFacade().postStatus(new PostStatusRequest(authToken, status));
+        validateResponse(response);
     }
 
     @Override

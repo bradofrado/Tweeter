@@ -55,7 +55,7 @@ public class LoginFragment extends Fragment implements AuthenticationPresenter.V
 
             @Override
             public void onClick(View view) {
-                presenter.login(alias.getText().toString(), alias.getText().toString());
+                presenter.login(alias.getText().toString(), password.getText().toString());
             }
         });
 

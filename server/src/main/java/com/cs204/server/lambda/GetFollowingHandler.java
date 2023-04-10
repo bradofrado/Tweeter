@@ -1,16 +1,14 @@
 package com.cs204.server.lambda;
 
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.cs204.server.service.FollowService;
 
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
 import edu.byu.cs.tweeter.model.net.response.FollowingResponse;
-import com.cs204.server.service.FollowService;
 
 /**
  * An AWS lambda function that returns the users a user is following.
  */
-public class GetFollowingHandler implements RequestHandler<FollowingRequest, FollowingResponse> {
+public class GetFollowingHandler extends BaseHandler<FollowingRequest, FollowingResponse> {
 
     /**
      * Returns the users that the user specified in the request is following. Uses information in
@@ -18,12 +16,10 @@ public class GetFollowingHandler implements RequestHandler<FollowingRequest, Fol
      * followees after any that were returned in a previous request.
      *
      * @param request contains the data required to fulfill the request.
-     * @param context the lambda context.
      * @return the followees.
      */
     @Override
-    public FollowingResponse handleRequest(FollowingRequest request, Context context) {
-        FollowService service = new FollowService();
-        return service.getFollowees(request);
+    public FollowingResponse handleRequest(FollowingRequest request) {
+        return getInstance(FollowService.class).getFollowees(request);
     }
 }

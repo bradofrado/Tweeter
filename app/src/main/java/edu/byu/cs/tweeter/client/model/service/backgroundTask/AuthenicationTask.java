@@ -28,12 +28,12 @@ public abstract class AuthenicationTask extends BackgroundTask {
     }
 
     @Override
-    protected void processTask() throws IOException, TweeterRemoteException {
+    protected void processTask() throws IOException, TweeterRemoteException, TaskFailedException {
         Pair<User, AuthToken> authenticationResult = doAuthentication();
 
         user = authenticationResult.getFirst();
         authToken = authenticationResult.getSecond();
     }
 
-    protected abstract Pair<User, AuthToken> doAuthentication() throws IOException, TweeterRemoteException;
+    protected abstract Pair<User, AuthToken> doAuthentication() throws IOException, TweeterRemoteException, TaskFailedException;
 }

@@ -13,10 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.util.JsonSerializer;
 
 class ClientCommunicator {
 
-    private static final int TIMEOUT_MILLIS = 60000;
+    private static final int TIMEOUT_MILLIS = 600000;
 
     private final String baseURL;
 

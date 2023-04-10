@@ -25,8 +25,10 @@ public class GetFeedTask extends PagedTask<Status> {
     }
 
     @Override
-    protected Pair<List<Status>, Boolean> getItems() throws IOException, TweeterRemoteException {
+    protected Pair<List<Status>, Boolean> getItems() throws IOException, TweeterRemoteException, TaskFailedException {
         FeedResponse response = getServerFacade().getFeed(new FeedRequest(authToken, getTargetUser().alias, getLimit(), getLastItem()));
+
+        validateResponse(response);
 
         return new Pair<>(response.getStatuses(), response.getHasMorePages());
     }

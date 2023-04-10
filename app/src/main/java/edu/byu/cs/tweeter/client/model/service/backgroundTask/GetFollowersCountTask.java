@@ -22,8 +22,10 @@ public class GetFollowersCountTask extends CountTask {
     }
 
     @Override
-    protected void processTask() throws IOException, TweeterRemoteException {
+    protected void processTask() throws IOException, TweeterRemoteException, TaskFailedException {
         FollowersCountResponse response = getServerFacade().getFollowersCount(new FollowersCountRequest(authToken, getTargetUser().getAlias()));
+        validateResponse(response);
+
         count = response.getCount();
     }
 

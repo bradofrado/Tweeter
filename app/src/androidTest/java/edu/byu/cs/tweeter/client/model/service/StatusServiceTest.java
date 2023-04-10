@@ -32,8 +32,8 @@ public class StatusServiceTest {
      */
     @BeforeEach
     public void setup() {
-        currentUser = new User("FirstName", "LastName", null);
-        currentAuthToken = new AuthToken("abc");
+        currentUser = new User("FirstName", "LastName", "@allen", null);
+        currentAuthToken = new AuthToken("cf55b7ad-8257-4df3-9916-4b52880b5b82");
 
         statusServiceSpy = Mockito.spy(new StatusService());
 
@@ -132,7 +132,7 @@ public class StatusServiceTest {
         statusServiceSpy.getStatuses(currentUser, 3, null, observer);
         awaitCountDownLatch();
 
-        List<Status> expectedStatuses = FakeData.getInstance().getFakeStatuses().subList(0, 3);
+        List<Status> expectedStatuses = FakeData.getInstance().getFakeStatuses().subList(1, 4);
         Mockito.verify(observer).handleSuccess(expectedStatuses, true);
 
         Assertions.assertTrue(observer.isSuccess());

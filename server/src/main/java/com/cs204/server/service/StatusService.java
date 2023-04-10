@@ -1,8 +1,19 @@
 package com.cs204.server.service;
 
+import com.cs204.server.dao.AuthTokenDAO;
+import com.cs204.server.dao.DataPage;
+import com.cs204.server.dao.FeedDAO;
+import com.cs204.server.dao.FollowDAO;
+import com.cs204.server.dao.StoryDAO;
+import com.cs204.server.dao.UserDAO;
+
+import java.text.ParseException;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import edu.byu.cs.tweeter.model.domain.Status;
+import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.FeedRequest;
 import edu.byu.cs.tweeter.model.net.request.PostStatusRequest;
 import edu.byu.cs.tweeter.model.net.request.StoryRequest;
@@ -11,8 +22,21 @@ import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.StoryResponse;
 import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
+import edu.byu.cs.tweeter.util.Timestamp;
 
-public class StatusService {
+public class StatusService extends AuthenticatedService {
+    private FeedDAO feedDAO;
+    private StoryDAO storyDAO;
+    private FollowDAO followDAO;
+
+    @Inject
+    public StatusService(FeedDAO feedDAO, StoryDAO storyDAO, FollowDAO followDAO, UserDAO userDAO, AuthTokenDAO authTokenDAO) {
+        super(authTokenDAO, userDAO);
+        this.feedDAO = feedDAO;
+        this.storyDAO = storyDAO;
+        this.followDAO = followDAO;
+    }
+
     public FeedResponse getFeed(FeedRequest request) {
         if(request.getTargetUser() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
@@ -22,9 +46,17 @@ public class StatusService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
-        Pair<List<Status>, Boolean> pageOfStatus = getFakeData().getPageOfStatus(request.getLastStatus(), request.getLimit());
+        getAuthenticatedUser(request.getAuthToken());
+        String date = request.getLastStatus() != null ? request.getLastStatus().getDatetime() : null;
 
-        return new FeedResponse(pageOfStatus.getFirst(), pageOfStatus.getSecond());
+        Long time = null;
+        time = Timestamp.getMillis(date);
+        DataPage<Status> page = feedDAO.getPageOfFeeds(request.getTargetUser(), request.getLimit(), time);
+        page.getValues().forEach(p -> {
+            User user = userDAO.getUser(p.getUser().getAlias());
+            p.setUser(user);
+        });
+        return new FeedResponse(page.getValues(), page.isHasMorePages());
     }
 
     public StoryResponse getStory(StoryRequest request) {
@@ -36,9 +68,19 @@ public class StatusService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
-        Pair<List<Status>, Boolean> pageOfStatus = getFakeData().getPageOfStatus(request.getLastStatus(), request.getLimit());
+        getAuthenticatedUser(request.getAuthToken());
 
-        return new StoryResponse(pageOfStatus.getFirst(), pageOfStatus.getSecond());
+        String date = request.getLastStatus() != null ? request.getLastStatus().getDatetime() : null;
+
+        Long time = null;
+        time = Timestamp.getMillis(date);
+
+        DataPage<Status> page = storyDAO.getPageOfStories(request.getTargetUser(), request.getLimit(), time);
+        page.getValues().forEach(p -> {
+            User user = userDAO.getUser(p.getUser().getAlias());
+            p.setUser(user);
+        });
+        return new StoryResponse(page.getValues(), page.isHasMorePages());
     }
 
     public PostStatusResponse postStatus(PostStatusRequest request) {
@@ -48,16 +90,24 @@ public class StatusService {
             throw new RuntimeException("[Bad Request] Request needs to have an authtoken");
         }
 
+        getAuthenticatedUser(request.getAuthToken());
+
+        long currentTime = getCurrentTime();
+        Status status = request.getStatus();
+        String targetUserAlias = status.getUser().getAlias();
+        storyDAO.setStory(status.getPost(), targetUserAlias, currentTime, status.getUrls(), status.getMentions());
+        boolean hasMorePages = true;
+        String lastPoster = null;
+        while (hasMorePages) {
+            DataPage<String> followers = followDAO.getPageOfFollowers(targetUserAlias, 10, lastPoster);
+            hasMorePages = followers.isHasMorePages();
+            followers.getValues().forEach(f -> feedDAO.setFeed(targetUserAlias, status.getPost(), f, currentTime, status.getUrls(), status.getMentions()));
+            lastPoster = followers.getValues().get(followers.getValues().size() - 1);
+        }
         return new PostStatusResponse();
     }
 
-    /**
-     * Returns the {@link FakeData} object used to generate dummy users and auth tokens.
-     * This is written as a separate method to allow mocking of the {@link FakeData}.
-     *
-     * @return a {@link FakeData} instance.
-     */
-    FakeData getFakeData() {
-        return FakeData.getInstance();
+    private long getCurrentTime() {
+        return System.currentTimeMillis();
     }
 }

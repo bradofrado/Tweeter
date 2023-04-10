@@ -11,6 +11,7 @@ import java.util.List;
 import edu.byu.cs.tweeter.client.model.net.ServerFacade;
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
+import edu.byu.cs.tweeter.model.net.response.Response;
 import edu.byu.cs.tweeter.util.FakeData;
 import edu.byu.cs.tweeter.util.Pair;
 
@@ -38,15 +39,23 @@ public abstract class BackgroundTask implements Runnable {
             processTask();
 
             sendSuccessMessage();
+        } catch (TaskFailedException ex) {
+            sendFailedMessage(ex.getMessage());
         } catch (Exception ex) {
             Log.e(LOG_TAG, "Failed to get followees", ex);
             sendExceptionMessage(ex);
         }
     }
 
-    protected abstract void processTask() throws TweeterRemoteException, IOException;
+    protected abstract void processTask() throws TweeterRemoteException, IOException, TaskFailedException;
 
     protected abstract void loadSuccessBundle(Bundle msgBundle);
+
+    protected void validateResponse(Response response) throws TaskFailedException {
+        if (!response.isSuccess()) {
+            throw new TaskFailedException(response.getMessage());
+        }
+    }
 
     private void sendSuccessMessage() {
         Bundle msgBundle = createBundle(true);

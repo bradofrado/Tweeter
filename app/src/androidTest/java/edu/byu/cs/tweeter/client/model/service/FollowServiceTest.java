@@ -32,8 +32,8 @@ public class FollowServiceTest {
      */
     @BeforeEach
     public void setup() {
-        currentUser = new User("FirstName", "LastName", null);
-        currentAuthToken = new AuthToken("asb");
+        currentUser = new User("Allen", "Anderson","@allen", null);
+        currentAuthToken = new AuthToken("cf55b7ad-8257-4df3-9916-4b52880b5b82");
         Cache.getInstance().setCurrUserAuthToken(currentAuthToken);
 
         followServiceSpy = Mockito.spy(new FollowService());
@@ -131,7 +131,7 @@ public class FollowServiceTest {
         followServiceSpy.getMoreFollowing(currentUser, 3, null, observer);
         awaitCountDownLatch();
 
-        List<User> expectedFollowees = FakeData.getInstance().getFakeUsers().subList(0, 3);
+        List<User> expectedFollowees = FakeData.getInstance().getFakeUsers().subList(1, 4);
         Assertions.assertTrue(observer.isSuccess());
         Assertions.assertNull(observer.getMessage());
         Assertions.assertEquals(expectedFollowees, observer.getFollowees());

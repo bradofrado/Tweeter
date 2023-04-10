@@ -14,20 +14,23 @@ import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.TweeterRemoteException;
 import edu.byu.cs.tweeter.model.net.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowersCountRequest;
+import edu.byu.cs.tweeter.model.net.request.LoginRequest;
 import edu.byu.cs.tweeter.model.net.request.RegisterRequest;
 import edu.byu.cs.tweeter.model.net.response.FollowerResponse;
 import edu.byu.cs.tweeter.model.net.response.FollowersCountResponse;
+import edu.byu.cs.tweeter.model.net.response.LoginResponse;
 import edu.byu.cs.tweeter.model.net.response.RegisterResponse;
 
 @DisplayName("Client Server Facade - Server API Integration tests")
 public class ServerIntegrationTests {
     private ServerFacade serverFacade;
     private User targetUser;
+    private String password = "mypassword123";
 
     @BeforeEach
     public void setup() {
         serverFacade = new ServerFacade();
-        targetUser = new User("Braydon", "Jones", "bradofrado", "URL");
+        targetUser = new User("Allen", "Anderson", "@allen", "URL");
     }
 
     @Nested
@@ -36,8 +39,6 @@ public class ServerIntegrationTests {
 
         @BeforeEach
         public void setup() {
-            String password = "mypassword123";
-
             request = new RegisterRequest(targetUser.getFirstName(), targetUser.getLastName(), targetUser.getAlias(), password, targetUser.getImageUrl());
         }
         @Test
@@ -56,7 +57,7 @@ public class ServerIntegrationTests {
                 Assertions.assertEquals(targetUser.getFirstName(), registeredUser.getFirstName());
                 Assertions.assertEquals(targetUser.getLastName(), registeredUser.getLastName());
                 Assertions.assertEquals(targetUser.getAlias(), registeredUser.getAlias());
-                Assertions.assertEquals(targetUser.getImageUrl(), registeredUser.getImageUrl());
+                Assertions.assertEquals("https://braydon-cs340.s3.us-west-2.amazonaws.com/" + targetUser.getAlias(), registeredUser.getImageUrl());
 
                 Assertions.assertNotNull(response.getAuthToken());
                 Assertions.assertNotNull(response.getAuthToken().getToken());
@@ -151,7 +152,50 @@ public class ServerIntegrationTests {
         }
     }
 
+    @Nested
+    @DisplayName("Test login")
+    public class LoginTest {
+        private AuthToken authToken;
+        private LoginRequest request;
+        @BeforeEach
+        public void setup() {
+            authToken = createAuthToken();
+            request = new LoginRequest(targetUser.getAlias(), password);
+        }
 
+        @Test
+        @DisplayName("Should login when login")
+        public void should_Login_whenLogin() {
+            try {
+                LoginResponse response = serverFacade.login(request);
+                Assertions.assertTrue(response.isSuccess());
+                Assertions.assertNotNull(response.getAuthToken());
+                Assertions.assertNotNull(response.getAuthToken().getToken());
+                Assertions.assertNotNull(response.getUser());
+                Assertions.assertEquals(targetUser, response.getUser());
+            } catch (Exception ex) {
+                Assertions.fail(ex.getMessage());
+            }
+
+        }
+
+        @Test
+        @DisplayName("Should fail when invalid login")
+        public void should_fail_whenInvalidLogin() {
+            request.setPassword("invalid");
+            try {
+                LoginResponse response = serverFacade.login(request);
+                Assertions.assertFalse(response.isSuccess());
+                Assertions.assertNotNull(response.getMessage());
+                Assertions.assertNull(response.getAuthToken());
+                Assertions.assertNull(response.getUser());
+            } catch (Exception ex) {
+                Assertions.fail(ex.getMessage());
+            }
+
+        }
+
+    }
 
     private AuthToken createAuthToken() {
         AuthToken authToken = null;

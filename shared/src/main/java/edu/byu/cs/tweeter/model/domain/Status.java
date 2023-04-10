@@ -48,7 +48,7 @@ public class Status implements Serializable {
         return user;
     }
 
-    public String getDate() {
+    public String getDatetime() {
         return datetime;
     }
 
@@ -64,6 +64,8 @@ public class Status implements Serializable {
         return mentions;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,7 +73,7 @@ public class Status implements Serializable {
         Status status = (Status) o;
         return Objects.equals(post, status.post) &&
                 Objects.equals(user, status.user) &&
-                Objects.equals(datetime, status.datetime) &&
+                //Objects.equals(datetime, status.datetime) &&
                 Objects.equals(mentions, status.mentions) &&
                 Objects.equals(urls, status.urls);
     }
@@ -92,4 +94,19 @@ public class Status implements Serializable {
                 '}';
     }
 
+    public void setPost(String post) {
+        this.post = post;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
+    public void setUrls(List<String> urls) {
+        this.urls = urls;
+    }
+
+    public void setMentions(List<String> mentions) {
+        this.mentions = mentions;
+    }
 }

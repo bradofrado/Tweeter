@@ -1,6 +1,8 @@
-package edu.byu.cs.tweeter.client.model.net;
+package edu.byu.cs.tweeter.util;
 
 import com.google.gson.Gson;
+
+import java.io.Reader;
 
 public class JsonSerializer {
 
@@ -9,6 +11,10 @@ public class JsonSerializer {
     }
 
     public static <T> T deserialize(String value, Class<T> returnType) {
+        return (new Gson()).fromJson(value, returnType);
+    }
+
+    public static <T> T deserialize(Reader value, Class<T> returnType) {
         return (new Gson()).fromJson(value, returnType);
     }
 }
