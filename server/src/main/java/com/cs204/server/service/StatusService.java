@@ -80,10 +80,11 @@ public class StatusService extends AuthenticatedService {
         return new StoryResponse(page.getValues(), page.isHasMorePages());
     }
 
-    public void postFeed(Status status, DataPage<String> follwers) {
-        for (Status status : statuses) {
+    public void postFeed(Status status, DataPage<String> followers) {
+        for (String follower : followers.getValues()) {
             long time = Timestamp.getMillis(status.getDatetime());
-            feedDAO.setFeed(targetUserAlias, status.getPost(), status.getUser().getAlias(), time, status.getUrls(), status.getMentions());
+
+            feedDAO.setFeed(follower, status.getPost(), status.getUser().getAlias(), time, status.getUrls(), status.getMentions());
         }
     }
 

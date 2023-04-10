@@ -79,7 +79,7 @@ public class FollowService extends AuthenticatedService {
         }
 
         getAuthenticatedUser(request.getAuthToken());
-        DataPage<String> followers = followDAO.getPageOfFollowers(request.getFollowerAlias(), request.getLimit(), request.getLastFollower());
+        DataPage<String> followers = getFollowers(request.getFollowerAlias(), request.getLimit(), request.getLastFollower());
         List<User> users = new ArrayList<>();
         for (String followerAlias : followers.getValues()) {
             User user = userDAO.getUser(followerAlias);
@@ -87,6 +87,10 @@ public class FollowService extends AuthenticatedService {
         }
 
         return new FollowerResponse(users, followers.isHasMorePages());
+    }
+
+    public DataPage<String> getFollowers(String followerAlias, int limit, String lastFollower) {
+        return followDAO.getPageOfFollowers(followerAlias, limit, lastFollower);
     }
 
     /**
