@@ -7,7 +7,6 @@ import com.cs204.server.dao.FollowDAO;
 import com.cs204.server.dao.StoryDAO;
 import com.cs204.server.dao.UserDAO;
 
-import java.text.ParseException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -20,8 +19,6 @@ import edu.byu.cs.tweeter.model.net.request.StoryRequest;
 import edu.byu.cs.tweeter.model.net.response.FeedResponse;
 import edu.byu.cs.tweeter.model.net.response.PostStatusResponse;
 import edu.byu.cs.tweeter.model.net.response.StoryResponse;
-import edu.byu.cs.tweeter.util.FakeData;
-import edu.byu.cs.tweeter.util.Pair;
 import edu.byu.cs.tweeter.util.Timestamp;
 
 public class StatusService extends AuthenticatedService {
@@ -83,7 +80,14 @@ public class StatusService extends AuthenticatedService {
         return new StoryResponse(page.getValues(), page.isHasMorePages());
     }
 
-    public PostStatusResponse postStatus(PostStatusRequest request) {
+    public void postFeed(Status status, DataPage<String> follwers) {
+        for (Status status : statuses) {
+            long time = Timestamp.getMillis(status.getDatetime());
+            feedDAO.setFeed(targetUserAlias, status.getPost(), status.getUser().getAlias(), time, status.getUrls(), status.getMentions());
+        }
+    }
+
+    public PostStatusResponse postStory(PostStatusRequest request) {
         if(request.getStatus() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a status");
         } else if (request.getAuthToken() == null || request.getAuthToken().getToken().length() == 0) {
@@ -96,14 +100,7 @@ public class StatusService extends AuthenticatedService {
         Status status = request.getStatus();
         String targetUserAlias = status.getUser().getAlias();
         storyDAO.setStory(status.getPost(), targetUserAlias, currentTime, status.getUrls(), status.getMentions());
-        boolean hasMorePages = true;
-        String lastPoster = null;
-        while (hasMorePages) {
-            DataPage<String> followers = followDAO.getPageOfFollowers(targetUserAlias, 10, lastPoster);
-            hasMorePages = followers.isHasMorePages();
-            followers.getValues().forEach(f -> feedDAO.setFeed(targetUserAlias, status.getPost(), f, currentTime, status.getUrls(), status.getMentions()));
-            lastPoster = followers.getValues().get(followers.getValues().size() - 1);
-        }
+
         return new PostStatusResponse();
     }
 
