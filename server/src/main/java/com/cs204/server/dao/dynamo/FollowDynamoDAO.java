@@ -3,6 +3,17 @@ package com.cs204.server.dao.dynamo;
 import com.cs204.server.dao.DataPage;
 import com.cs204.server.dao.FollowDAO;
 import com.cs204.server.dao.dynamo.model.FollowerBean;
+import com.cs204.server.dao.dynamo.model.UserBean;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.byu.cs.tweeter.model.domain.User;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.model.BatchWriteItemEnhancedRequest;
+import software.amazon.awssdk.enhanced.dynamodb.model.BatchWriteResult;
+import software.amazon.awssdk.enhanced.dynamodb.model.WriteBatch;
+import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
 public class FollowDynamoDAO extends PageDynamoDAO<FollowerBean> implements FollowDAO {
     public FollowDynamoDAO() {
@@ -25,7 +36,6 @@ public class FollowDynamoDAO extends PageDynamoDAO<FollowerBean> implements Foll
     public boolean hasFollower(String follower_handle, String followee_handle) {
         return getItem(follower_handle, followee_handle) != null;
     }
-
 
     /**
      * Updates a follower if the given follower_handle exists, creates a new one if it does not exist
@@ -69,5 +79,28 @@ public class FollowDynamoDAO extends PageDynamoDAO<FollowerBean> implements Foll
     @Override
     public DataPage<String> getPageOfFollowers(String targetUserAlias, int pageSize, String lastUserAlias) {
         return convertDataPage(getPageOfItems(targetUserAlias, pageSize, lastUserAlias), p -> p.getFollowee_handle());
+    }
+
+    @Override
+    public void addFollowersBatch(List<String> followers, String followee) {
+        List<FollowerBean> batchToWrite = new ArrayList<>();
+        for (String u : followers) {
+            FollowerBean dto = new FollowerBean();
+            dto.setFollowee_handle(u);
+            dto.setFollower_handle(followee);
+            batchToWrite.add(dto);
+
+            if (batchToWrite.size() == 25) {
+                // package this batch up and send to DynamoDB.
+                writeChunkOfDTOs(batchToWrite);
+                batchToWrite = new ArrayList<>();
+            }
+        }
+
+        // write any remaining
+        if (batchToWrite.size() > 0) {
+            // package this batch up and send to DynamoDB.
+            writeChunkOfDTOs(batchToWrite);
+        }
     }
 }

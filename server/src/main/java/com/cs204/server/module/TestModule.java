@@ -108,6 +108,11 @@ public class TestModule extends AbstractModule {
             return new Random().nextInt() > 0;
         }
 
+        @Override
+        public void addFollowersBatch(List<String> followers, String followee) {
+
+        }
+
         /**
          * Determines the index for the first followee in the specified 'allFollowees' list that should
          * be returned in the current request. This will be the index of the next followee after the
@@ -228,6 +233,11 @@ public class TestModule extends AbstractModule {
 
         @Override
         public void setFolloweeCount(String followee, int count) {
+
+        }
+
+        @Override
+        public void addUserBatch(List<User> users) {
 
         }
     }

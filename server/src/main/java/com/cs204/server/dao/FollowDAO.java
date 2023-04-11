@@ -1,5 +1,7 @@
 package com.cs204.server.dao;
 
+import java.util.List;
+
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.FollowerRequest;
 import edu.byu.cs.tweeter.model.net.request.FollowingRequest;
@@ -18,4 +20,5 @@ public interface FollowDAO {
     void deleteFollower(String follower_handle, String followee_handle);
 
     boolean hasFollower(String follower_handle, String followee_handle);
+    void addFollowersBatch(List<String> followers, String followee);
 }

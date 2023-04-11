@@ -14,6 +14,20 @@ public class UserBean {
     private int followers_count;
     private int followees_count;
 
+    public UserBean() {
+
+    }
+
+    public UserBean(User user) {
+        setAlias(user.getAlias());
+        setFollowees_count(0);
+        setFollowers_count(0);
+        setPassword("password");
+        setImageUrl(user.getImageUrl());
+        setFirstName(user.getFirstName());
+        setLastName(user.getLastName());
+    }
+
     @DynamoDbPartitionKey
     public String getAlias() {
         return alias;

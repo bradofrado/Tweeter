@@ -52,7 +52,7 @@ public class ServerFacade {
     public final static String LOGIN_URL = "/login";
     public final static String LOGOUT_URL = "/logout";
     public final static String REGISTER_URL = "/register";
-    public final static String USER_URL = "/user";
+    public final static String USER_URL = "/getuser";
     public final static String GET_FOLLOWERS_URL = "/followers";
     public final static String IS_FOLLOWER_URL = "/isfollower";
     public final static String GET_FOLLOWEES_URL = "/following";
@@ -85,7 +85,7 @@ public class ServerFacade {
     }
 
     public UserResponse getUser(UserRequest request) throws IOException, TweeterRemoteException {
-        return clientCommunicator.doGet(USER_URL + "/" + request.getAlias(), createAuthTokenHeader(request.getAuthToken()), UserResponse.class);
+        return clientCommunicator.doPost(USER_URL, request, null, UserResponse.class);
     }
 
     /**

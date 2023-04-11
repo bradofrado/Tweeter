@@ -1,5 +1,7 @@
 package com.cs204.server.dao;
 
+import java.util.List;
+
 import edu.byu.cs.tweeter.model.domain.User;
 import edu.byu.cs.tweeter.model.net.request.UserRequest;
 import edu.byu.cs.tweeter.model.net.response.UserResponse;
@@ -15,5 +17,5 @@ public interface UserDAO {
     Integer getFollowerCount(String follower);
     void setFollowerCount(String follower, int count);
     void setFolloweeCount(String followee, int count);
-
+    void addUserBatch(List<User> users);
 }

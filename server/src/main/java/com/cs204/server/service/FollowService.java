@@ -65,11 +65,11 @@ public class FollowService extends AuthenticatedService {
             User user = userDAO.getUser(followeeAlias);
             users.add(user);
         }
-
         return new FollowingResponse(users, followees.isHasMorePages());
     }
 
     public FollowerResponse getFollowers(FollowerRequest request) {
+        System.out.println("Hello there");
         if(request.getFollowerAlias() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
         } else if(request.getLimit() <= 0) {

@@ -15,6 +15,7 @@ import com.cs204.server.dao.s3.ImageS3DAO;
 import com.cs204.server.service.FollowService;
 import com.cs204.server.service.StatusService;
 import com.cs204.server.service.UserService;
+import com.cs204.server.util.Filler;
 import com.cs204.server.util.HashingUtil;
 import com.google.inject.AbstractModule;
 
@@ -41,11 +42,11 @@ public class MainModule extends AbstractModule {
     }
 
     public static void main(String[] args) {
-        FollowDAO followDAO = new FollowDynamoDAO();
-        StoryDAO storyDAO = new StoryDynamoDAO();
-        UserDAO userDAO = new UserDynamoDAO();
-        FeedDAO feedDAO = new FeedDynamoDAO();
-        List<User> users = getFakeData().getFakeUsers();
+//        FollowDAO followDAO = new FollowDynamoDAO();
+//        StoryDAO storyDAO = new StoryDynamoDAO();
+//        UserDAO userDAO = new UserDynamoDAO();
+//        FeedDAO feedDAO = new FeedDynamoDAO();
+//        List<User> users = getFakeData().getFakeUsers();
 //        for (User user : users) {
 //            for (User user1: users) {
 //                if (user != user1)
@@ -55,22 +56,23 @@ public class MainModule extends AbstractModule {
 //            userDAO.setFolloweeCount(user.getAlias(), 20);
 //            userDAO.setFollowerCount(user.getAlias(), 20);
 //        }
-
-        try {
-            List<Status> statuses = getFakeData().getFakeStatuses();
-            for (Status status : statuses) {
-                for (User user : users) {
-                    if (user.getAlias().equals(status.getUser().getAlias())) continue;
-                    long time = System.currentTimeMillis();
-                    time /= 1000;
-                    time *= 1000;
-                    feedDAO.setFeed(user.getAlias(), status.getPost(), status.getUser().getAlias(), time, status.getUrls(), status.getMentions());
-                }
-                //storyDAO.setStory(status.getPost(), status.getUser().getAlias(), System.currentTimeMillis(), status.getUrls(), status.getMentions());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+//
+//        try {
+//            List<Status> statuses = getFakeData().getFakeStatuses();
+//            for (Status status : statuses) {
+//                for (User user : users) {
+//                    if (user.getAlias().equals(status.getUser().getAlias())) continue;
+//                    long time = System.currentTimeMillis();
+//                    time /= 1000;
+//                    time *= 1000;
+//                    feedDAO.setFeed(user.getAlias(), status.getPost(), status.getUser().getAlias(), time, status.getUrls(), status.getMentions());
+//                }
+//                //storyDAO.setStory(status.getPost(), status.getUser().getAlias(), System.currentTimeMillis(), status.getUrls(), status.getMentions());
+//            }
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+        Filler.fillDatabase();
     }
 
     static FakeData getFakeData() {
