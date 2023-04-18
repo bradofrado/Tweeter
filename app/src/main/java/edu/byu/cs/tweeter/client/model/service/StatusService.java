@@ -31,7 +31,7 @@ public class StatusService extends BaseService {
         executeTask(statusTask);
     }
 
-    protected AuthToken getCurrUserAuthToken() {
+    public AuthToken getCurrUserAuthToken() {
         return Cache.getInstance().getCurrUserAuthToken();
     }
 }

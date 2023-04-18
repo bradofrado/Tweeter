@@ -78,15 +78,23 @@ public class MainPresenter extends Presenter<MainPresenter.View> {
     public void postStatus(String post) {
         try {
             view.displayInfoMessage("Posting Status...");
-            Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), getFormattedDateTime(), parseURLs(post), parseMentions(post));
-            getStatusService().postStatus(newStatus, new PostStatusObserver());
+            Status newStatus = new Status(post, getCache().getCurrUser(), getFormattedDateTime(), parseURLs(post), parseMentions(post));
+            getStatusService().postStatus(newStatus, getNewPostStatusObserver());
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage(), ex);
             view.displayMessage("Failed to post the status because of exception: " + ex.getMessage());
         }
     }
 
-    protected StatusService getStatusService() {
+    public Cache getCache() {
+        return Cache.getInstance();
+    }
+
+    public SimpleNotificationObserver getNewPostStatusObserver() {
+        return new PostStatusObserver();
+    }
+
+    public StatusService getStatusService() {
         if (statusService == null) {
             statusService = new StatusService();
         }
@@ -196,7 +204,7 @@ public class MainPresenter extends Presenter<MainPresenter.View> {
         }
     }
 
-    protected class PostStatusObserver extends ServiceObserver implements SimpleNotificationObserver {
+    public class PostStatusObserver extends ServiceObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleSuccess() {

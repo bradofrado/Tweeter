@@ -45,6 +45,8 @@ public abstract class PageDynamoDAO<T> extends DynamoDAO<T> {
                 .queryConditional(QueryConditional.keyEqualTo(getKey(targetUserAlias, null)))
                 .limit(pageSize);
 
+
+        requestBuilder.scanIndexForward(false);
         if(isNonEmptyString(lastUserAlias)) {
             // Build up the Exclusive Start Key (telling DynamoDB where you left off reading items)
             Map<String, AttributeValue> startKey = new HashMap<>();
