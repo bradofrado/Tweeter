@@ -2,16 +2,12 @@ package com.cs204.server.dao.dynamo;
 
 import com.cs204.server.dao.UserDAO;
 import com.cs204.server.dao.dynamo.model.UserBean;
+import com.cs204.server.util.HashingUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.User;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.model.BatchWriteItemEnhancedRequest;
-import software.amazon.awssdk.enhanced.dynamodb.model.BatchWriteResult;
-import software.amazon.awssdk.enhanced.dynamodb.model.WriteBatch;
-import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 
 public class UserDynamoDAO extends DynamoDAO<UserBean> implements UserDAO {
     private static final String TableName = "user";
@@ -106,6 +102,7 @@ public class UserDynamoDAO extends DynamoDAO<UserBean> implements UserDAO {
         List<UserBean> batchToWrite = new ArrayList<>();
         for (User u : users) {
             UserBean dto = new UserBean(u);
+            dto.setPassword(HashingUtil.hash("password"));
             batchToWrite.add(dto);
 
             if (batchToWrite.size() == 25) {

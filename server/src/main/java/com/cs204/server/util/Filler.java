@@ -19,7 +19,7 @@ public class Filler {
 
     // The alias of the user to be followed by each user created
     // This example code does not add the target user, that user must be added separately.
-    private final static String FOLLOW_TARGET = "@bradofrado";
+    private final static String FOLLOW_TARGET = "@test";
 
     private static Injector injector;
     private static Injector getInjector() {
@@ -42,7 +42,7 @@ public class Filler {
         for (int i = 1; i <= NUM_USERS; i++) {
 
             String name = "Guy";
-            String alias = "guy" + i;
+            String alias = "@guy" + i;
 
             // Note that in this example, a UserDTO only has a name and an alias.
             // The url for the profile image can be derived from the alias in this example

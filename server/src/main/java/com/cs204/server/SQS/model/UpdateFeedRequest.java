@@ -2,25 +2,27 @@ package com.cs204.server.SQS.model;
 
 import com.cs204.server.dao.DataPage;
 
+import java.util.List;
+
 import edu.byu.cs.tweeter.model.domain.Status;
 
 public class UpdateFeedRequest {
-    private DataPage<String> followers;
+    private List<String> followers;
     private Status status;
 
-    public UpdateFeedRequest(DataPage<String> followers, Status status) {
+    public UpdateFeedRequest(List<String> followers, Status status) {
         this.followers = followers;
         this.status = status;
     }
 
-    private UpdateFeedRequest() {}
+    public UpdateFeedRequest() {}
 
 
-    public DataPage<String> getFollowers() {
+    public List<String> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(DataPage<String> followers) {
+    public void setFollowers(List<String> followers) {
         this.followers = followers;
     }
 

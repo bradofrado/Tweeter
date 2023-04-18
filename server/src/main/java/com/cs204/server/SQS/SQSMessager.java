@@ -8,7 +8,7 @@ import com.amazonaws.services.sqs.model.SendMessageResult;
 import edu.byu.cs.tweeter.util.JsonSerializer;
 
 public class SQSMessager {
-    private static final String BASE_URL = "https://sqs.us-west-2.amazonaws.com/051251608764/";
+    private static final String BASE_URL = "https://sqs.us-west-2.amazonaws.com/363642605830/";
     private String queueName;
 
     public SQSMessager(String queueName) {

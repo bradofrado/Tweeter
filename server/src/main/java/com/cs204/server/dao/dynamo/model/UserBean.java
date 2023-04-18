@@ -22,7 +22,6 @@ public class UserBean {
         setAlias(user.getAlias());
         setFollowees_count(0);
         setFollowers_count(0);
-        setPassword("password");
         setImageUrl(user.getImageUrl());
         setFirstName(user.getFirstName());
         setLastName(user.getLastName());
