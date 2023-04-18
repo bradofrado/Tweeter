@@ -29,7 +29,7 @@ public class FollowServiceTest {
 
     @BeforeEach
     public void setup() {
-        AuthToken authToken = new AuthToken();
+        AuthToken authToken = new AuthToken("abc");
 
         User currentUser = new User("FirstName", "LastName", null);
 

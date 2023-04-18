@@ -65,11 +65,11 @@ public class FollowService extends AuthenticatedService {
             User user = userDAO.getUser(followeeAlias);
             users.add(user);
         }
-
         return new FollowingResponse(users, followees.isHasMorePages());
     }
 
     public FollowerResponse getFollowers(FollowerRequest request) {
+        System.out.println("Hello there");
         if(request.getFollowerAlias() == null) {
             throw new RuntimeException("[Bad Request] Request needs to have a target user");
         } else if(request.getLimit() <= 0) {
@@ -79,7 +79,7 @@ public class FollowService extends AuthenticatedService {
         }
 
         getAuthenticatedUser(request.getAuthToken());
-        DataPage<String> followers = followDAO.getPageOfFollowers(request.getFollowerAlias(), request.getLimit(), request.getLastFollower());
+        DataPage<String> followers = getFollowers(request.getFollowerAlias(), request.getLimit(), request.getLastFollower());
         List<User> users = new ArrayList<>();
         for (String followerAlias : followers.getValues()) {
             User user = userDAO.getUser(followerAlias);
@@ -87,6 +87,10 @@ public class FollowService extends AuthenticatedService {
         }
 
         return new FollowerResponse(users, followers.isHasMorePages());
+    }
+
+    public DataPage<String> getFollowers(String followerAlias, int limit, String lastFollower) {
+        return followDAO.getPageOfFollowers(followerAlias, limit, lastFollower);
     }
 
     /**

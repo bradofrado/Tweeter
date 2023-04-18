@@ -25,6 +25,11 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.inject/guice
     implementation group: 'com.google.inject', name: 'guice', version: '5.1.0'
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-sqs
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-sqs', version: '1.11.977'
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-events
+    implementation group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '3.7.0'
+
 
 
 

@@ -2,6 +2,10 @@ package com.cs204.server.dao.dynamo;
 
 import com.cs204.server.dao.UserDAO;
 import com.cs204.server.dao.dynamo.model.UserBean;
+import com.cs204.server.util.HashingUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -92,5 +96,26 @@ public class UserDynamoDAO extends DynamoDAO<UserBean> implements UserDAO {
                 return new UserBean();
             }
         });
+    }
+
+    public void addUserBatch(List<User> users) {
+        List<UserBean> batchToWrite = new ArrayList<>();
+        for (User u : users) {
+            UserBean dto = new UserBean(u);
+            dto.setPassword(HashingUtil.hash("password"));
+            batchToWrite.add(dto);
+
+            if (batchToWrite.size() == 25) {
+                // package this batch up and send to DynamoDB.
+                writeChunkOfDTOs(batchToWrite);
+                batchToWrite = new ArrayList<>();
+            }
+        }
+
+        // write any remaining
+        if (batchToWrite.size() > 0) {
+            // package this batch up and send to DynamoDB.
+            writeChunkOfDTOs(batchToWrite);
+        }
     }
 }

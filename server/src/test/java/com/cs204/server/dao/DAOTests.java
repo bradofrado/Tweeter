@@ -60,7 +60,7 @@ public class DAOTests {
         @DisplayName("Should return page of followers")
         public void should_return_pageOfFollowers() {
             try {
-                DataPage<String> page = followDAO.getPageOfFollowers("@allen", 10, null);
+                DataPage<String> page = followDAO.getPageOfFollowees("@allen", 10, null);
                 assertTrue(page.isHasMorePages());
             } catch (Exception ex) {
                 Assertions.fail(ex.getMessage());
